@@ -1,0 +1,91 @@
+PRAGMA foreign_keys = ON;
+DROP TABLE IF EXISTS  users  ;
+
+
+CREATE TABLE IF NOT EXISTS  users  (
+   id  INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+   id_users  INTEGER NOT NULL ,
+   phone  TEXT NOT NULL,
+   email  TEXT NOT NULL,
+   password  TEXT NULL,
+   first_name  TEXT NULL,
+   last_name  TEXT NULL,
+   middle_name  TEXT NULL,
+   is_active  INTEGER NULL DEFAULT 0,
+   updated_at INTEGER NULL,
+   last_at  NUMERIC NULL);
+
+CREATE UNIQUE INDEX  phone_UNIQUE  ON  users  ( phone   );
+CREATE UNIQUE INDEX  email_UNIQUE  ON  users  ( email   );
+
+DROP TABLE IF EXISTS  contacts  ;
+CREATE TABLE IF NOT EXISTS  contacts  (
+   id  INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+   id_contacts  INTEGER NOT NULL ,
+   first_name  TEXT NULL,
+   middle_name  TEXT NULL,
+   last_name  TEXT NULL,
+   phone  TEXT NOT NULL,
+   email  TEXT NOT NULL) ;
+
+DROP TABLE IF EXISTS  conversation  ;
+
+CREATE TABLE IF NOT EXISTS  conversation  (
+   id  INTEGER NOT NULL  PRIMARY KEY  AUTOINCREMENT,
+   id_conversation  INTEGER NOT NULL ,
+   title  TEXT NULL,
+   creator_id  INTEGER NOT NULL,
+   created_at  INTEGER NULL,
+   updated_at  INTEGER NULL);
+
+DROP TABLE IF EXISTS  messages ;
+
+CREATE TABLE IF NOT EXISTS  messages  (
+   id  INTEGER NOT NULL  PRIMARY KEY  AUTOINCREMENT,
+   id_messages  INTEGER NOT NULL ,
+   conversation_id  INTEGER NOT NULL,
+   sender_id  INTEGER NOT NULL,
+   message_type  TEXT  NULL,
+   message  TEXT NULL,
+   attachment_thumb_url  TEXT NULL,
+   attachment_url  TEXT NULL,
+   created_at  INTEGER NULL,
+   guid  TEXT NULL);
+
+DROP TABLE IF EXISTS  participants ;
+
+CREATE TABLE IF NOT EXISTS  participants  (
+   id  INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
+   id_participants  INTEGER NOT NULL ,
+   conversation_id  INTEGER NOT NULL,
+   users_id  INTEGER NOT NULL,
+   type  TEXT  NOT NULL);
+
+
+
+DROP TABLE IF EXISTS  us ;
+CREATE TABLE IF NOT EXISTS us (
+  id  INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
+   phone  TEXT NOT NULL,
+   email  TEXT NOT NULL,
+   password  TEXT NULL,
+   first_name  TEXT NULL,
+   last_name  TEXT NULL,
+   middle_name  TEXT NULL,
+   verification_code  TEXT NULL);
+
+
+DROP TABLE IF EXISTS  access ;
+CREATE TABLE IF NOT EXISTS  access  (
+  id  INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
+   users_id  INTEGER NOT NULL,
+   token  TEXT NULL,
+   created_at  INTEGER NULL,
+   valid_to  INTEGER NULL);
+
+
+
+INSERT INTO access (users_id,token,created_at,valid_to)
+ VALUES ( 44,'FGHJKL',77,100);
+  INSERT INTO access (users_id,token,created_at,valid_to)
+ VALUES ( 74,'FG',70,1621672120471);

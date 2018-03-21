@@ -17,14 +17,15 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     private TextView last_time;
     private TextView last_sms;
     private ImageView imageCount;
+
     public MyViewHolder(View itemView) {
         super(itemView);
 
-        avatar_photo =(CircularImageView) itemView.findViewById(R.id.avatar_photo) ;
-        title = (TextView)  itemView.findViewById(R.id.title) ;
-        last_time= (TextView)  itemView.findViewById(R.id.last_time) ;
-        last_sms =(TextView)  itemView.findViewById(R.id.last_sms) ;
-        imageCount = (ImageView)  itemView.findViewById(R.id.imageCount) ;
+        avatar_photo = (CircularImageView) itemView.findViewById(R.id.avatar_photo);
+        title = (TextView) itemView.findViewById(R.id.title);
+        last_time = (TextView) itemView.findViewById(R.id.last_time);
+        last_sms = (TextView) itemView.findViewById(R.id.last_sms);
+        imageCount = (ImageView) itemView.findViewById(R.id.imageCount);
 
     }
 }

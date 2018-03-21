@@ -8,7 +8,7 @@ import android.view.ViewGroup;
  * Created by infol on 20.03.2018.
  */
 
-public class MyAdapter extends RecyclerView.Adapter <MyViewHolder>{
+public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     public MyAdapter() {
     }
