@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_group"
+            android:icon="@drawable/icons8useraccountfilled50"
+            android:title="Group" />
+        <item
+            android:id="@+id/nav_radio"
+            android:icon="@drawable/icons8radiofilled50"
+            android:title="Channal" />
+        <item
+            android:id="@+id/nav_contacts"
+            android:icon="@drawable/icons8_contacts_50"
+            android:title="contacts" />
+        <item
+            android:id="@+id/nav_Seting"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Tools" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

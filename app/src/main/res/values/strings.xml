@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">MessengerInfolga</string>
+    <string name="microphone">Микрофон</string>
+    <string name="remove">удалить</string>
+
+    <string name="search_hint">Поиск</string>
+    <string name="title_activity_main2">MainActivity2</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="TABLE_users">Settings</string>
+    <string name="TABLE_contacts">Settings</string>
+    <string name="TABLE_conversation">Settings</string>
+    <string name="TABLE_messages">Settings</string>
+    <string name="TABLE_participants">Settings</string>
+
+
+
+
+
+
+
 </resources>
