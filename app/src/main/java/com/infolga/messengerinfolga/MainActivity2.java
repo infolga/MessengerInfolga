@@ -1,6 +1,7 @@
 package com.infolga.messengerinfolga;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -23,7 +24,6 @@ public class MainActivity2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private Button button;
     private TextView textView;
-    private SearchView searchv;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -48,12 +48,14 @@ public class MainActivity2 extends AppCompatActivity
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
-        searchv = (SearchView) findViewById(R.id.search);
+
         textView = (TextView) findViewById(R.id.textView2);
         // mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
         DD_SQL.instanse(this);
 
+        Intent intent= new Intent(this , LoginActivity.class);
+        startActivity(intent);
 //
 //        // use a linear layout manager
 //        mLayoutManager = new LinearLayoutManager(this);
@@ -136,10 +138,7 @@ public class MainActivity2 extends AppCompatActivity
 
         switch (view.getId()) {
             case R.id.button:
-
                 textView.setText(DD_SQL.instanse(null).getAccessToken() );
-
-
                 break;
 
             default:

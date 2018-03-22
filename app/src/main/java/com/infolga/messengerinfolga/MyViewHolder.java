@@ -26,6 +26,5 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         last_time = (TextView) itemView.findViewById(R.id.last_time);
         last_sms = (TextView) itemView.findViewById(R.id.last_sms);
         imageCount = (ImageView) itemView.findViewById(R.id.imageCount);
-
     }
 }

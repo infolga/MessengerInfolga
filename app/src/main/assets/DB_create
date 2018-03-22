@@ -4,13 +4,13 @@ DROP TABLE IF EXISTS  users  ;
 
 CREATE TABLE IF NOT EXISTS  users  (
    id  INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+   username TEXT NULL,
    id_users  INTEGER NOT NULL ,
    phone  TEXT NOT NULL,
    email  TEXT NOT NULL,
    password  TEXT NULL,
    first_name  TEXT NULL,
    last_name  TEXT NULL,
-   middle_name  TEXT NULL,
    is_active  INTEGER NULL DEFAULT 0,
    updated_at INTEGER NULL,
    last_at  NUMERIC NULL);
@@ -71,8 +71,7 @@ CREATE TABLE IF NOT EXISTS us (
    password  TEXT NULL,
    first_name  TEXT NULL,
    last_name  TEXT NULL,
-   middle_name  TEXT NULL,
-   verification_code  TEXT NULL);
+   f_id INTEGER NULL);
 
 
 DROP TABLE IF EXISTS  access ;
@@ -83,9 +82,19 @@ CREATE TABLE IF NOT EXISTS  access  (
    created_at  INTEGER NULL,
    valid_to  INTEGER NULL);
 
+   DROP TABLE IF EXISTS  files ;
+CREATE TABLE IF NOT EXISTS  files  (
+  id  INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
+   files_id  INTEGER NOT NULL,
+   files_name  TEXT NULL,
+   title TEXT NULL,
+   path TEXT NULL,
+   created_at  INTEGER NULL);
 
 
-INSERT INTO access (users_id,token,created_at,valid_to)
+
+ INSERT INTO access (users_id,token,created_at,valid_to)
  VALUES ( 44,'FGHJKL',77,100);
   INSERT INTO access (users_id,token,created_at,valid_to)
- VALUES ( 74,'FG',70,1621672120471);
+ VALUES ( 44,'FG',70,1621672120471);
+

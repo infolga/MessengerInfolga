@@ -46,6 +46,16 @@ public class DD_SQL {
         }
     }
 
+//    public String getMyUser(){
+//        Cursor cursor = DB.getReadableDatabase().rawQuery(cont.getString(R.string. ), null);
+//        cursor.moveToFirst();
+//        String s;
+//
+//
+//
+//    }
+
+
     public String getAccessToken() {
 
         Cursor cursor = DB.getReadableDatabase().rawQuery(cont.getString(R.string.SQLgetAccessToken), null);
@@ -78,7 +88,9 @@ public class DD_SQL {
         public MyDB(Context context) {
 
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
             context.deleteDatabase(DATABASE_NAME);
+
             Log.v("DATABASE_constructor", this.toString());
             cont = context;
         }
