@@ -87,11 +87,19 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         boolean cancel = false;
         View focusView = null;
+
         if (TextUtils.isEmpty(phone)) {
             mPhoneView.setError(getString(R.string.error_field_required));
             focusView = mPhoneView;
             cancel = true;
         }
+        if (!isEmailValid(phone)) {
+            mPhoneView.setError(getString(R.string.error_invalid_phone));
+            focusView = mPhoneView;
+            cancel = true;
+        }
+
+
 
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
