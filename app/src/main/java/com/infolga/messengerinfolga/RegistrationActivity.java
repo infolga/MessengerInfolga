@@ -14,6 +14,9 @@ import com.github.pinball83.maskededittext.MaskedEditText;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
 
+
+    private static final String TAG = "RegistrationActivity";
+
     private MaskedEditText mPhoneView;
     private EditText mPasswordView;
     private EditText mPasswordReturnView;

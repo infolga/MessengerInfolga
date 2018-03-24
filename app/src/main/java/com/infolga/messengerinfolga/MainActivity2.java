@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,18 +17,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+
     private Button button;
     private TextView textView;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class MainActivity2 extends AppCompatActivity
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
-
+        editText = (EditText) findViewById(R.id.editText);
         textView = (TextView) findViewById(R.id.textView2);
         // mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
@@ -125,7 +129,6 @@ public class MainActivity2 extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -138,7 +141,47 @@ public class MainActivity2 extends AppCompatActivity
 
         switch (view.getId()) {
             case R.id.button:
-                textView.setText(DD_SQL.instanse(null).getAccessToken() );
+
+                //textView.setText(DD_SQL.instanse(null).getAccessToken() );
+                Message message= new Message();
+                message.what=ServerConnect.SEND_MESSAGE;
+
+
+                String s      = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
+                    "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                    "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+                    "    <modelVersion>4.0.0</modelVersion>\n" +
+                    "\n" +
+                    "    <groupId>123</groupId>\n" +
+                    "    <artifactId>345</artifactId>\n" +
+                    "    <version>1.0-SNAPSHOT</version>\n" +
+                    "    <build>\n" +
+                    "        <plugins>\n" +
+                    "            <plugin>\n" +
+                    "                <groupId>org.apache.maven.plugins</groupId>\n" +
+                    "                <artifactId>maven-compiler-plugin</artifactId>\n" +
+                    "                <configuration>\n" +
+                    "                    <source>1.6</source>\n" +
+                    "                    <target>1.6</target>\n" +
+                    "                </configuration>\n" +
+                    "            </plugin>\n" +
+                    "        </plugins>\n" +
+                    "    </build>\n" +
+                    "\n" +
+                    "    <dependencies>\n" +
+                    "\n" +
+                    "        <dependency>\n" +
+                    "            <groupId>io.netty</groupId>\n" +
+                    "            <artifactId>netty-all</artifactId> <!-- Use 'netty-all' for 4.0 or above -->\n" +
+                    "            <version>4.1.16.Final</version>\n" +
+                    "            <scope>compile</scope>\n" +
+                    "        </dependency>\n" +
+                    "    </dependencies>\n" +
+                    "</project>";
+                message.obj = editText.getText().toString();
+                ServerConnect.instanse(this).getmHandlerServerConnect().sendMessage( message);
+
                 break;
 
             default:

@@ -20,9 +20,11 @@ import java.util.Date;
 
 public class DD_SQL {
 
+    private static final String TAG = "DD_SQL";
+
     private static final String DATABASE_NAME = "MyDB.db";
     private static final int DATABASE_VERSION = 1;
-    private static Context cont;
+    private   Context cont;
     private static DD_SQL dd_sql;
     private MyDB DB;
 

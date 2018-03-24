@@ -3,20 +3,23 @@ package com.infolga.messengerinfolga;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
 
@@ -24,29 +27,53 @@ import com.github.pinball83.maskededittext.MaskedEditText;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
+    private static final String TAG = "LoginActivity";
     // UI references.
     private MaskedEditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Handler mHandlerActiveViwe;
+    private boolean shABoolean =false;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.e("CDA", "onKeyDown Called");
+            //onBackPressed();
+            ServerConnect.instanse(this).setAnswer(false);
+            shABoolean= false;
+            showProgress(false);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putBoolean("shABoolean",shABoolean);
+        super.onSaveInstanceState(outState);
+    }
+    // получение ранее сохраненного состояния
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        shABoolean = savedInstanceState.getBoolean("shABoolean");
+        showProgress( shABoolean);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Log.e("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,21 +102,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Button registration_button = (Button) findViewById(R.id.registration_button);
         registration_button.setOnClickListener(this);
 
+        ServerConnect.instanse(this);
+
+        mHandlerActiveViwe = new MyHandlerActiveViwe();
+        ServerConnect.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        showProgress(shABoolean);
+
+
     }
 
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -102,7 +129,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.w(password, this.toString());
         boolean cancel = false;
         View focusView = null;
-
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -117,8 +143,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             }
         }
-
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(phone)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -138,9 +162,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            shABoolean =true;
             showProgress(true);
-            mAuthTask = new UserLoginTask(phone, password);
-            mAuthTask.execute((Void) null);
+
+            ServerConnect.instanse(this).setAnswer(true);
+            ServerConnect.instanse(this).getmHandlerServerConnect().sendEmptyMessage(ServerConnect.SERVER_CONNECT);
         }
     }
 
@@ -149,7 +175,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean isPasswordValid(String password) {
-
         Log.w("" + password.matches("^[a-zA-Z0-9]+$"), this.toString());
         return password.length() >= 6 && password.matches("^[a-zA-Z0-9]+$");
     }
@@ -198,6 +223,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 break;
             case R.id.email_sign_in_button:
+
+//                Log.w("token", FirebaseInstanceId.getInstance().getToken());
+//                Toast toast = Toast.makeText(getApplicationContext(),
+//                        FirebaseInstanceId.getInstance().getToken(), Toast.LENGTH_SHORT);
+//                toast.show();
+//
+//
+//                Log.i(TAG, "BRAND: " + Build.ID);
+//                Log.i(TAG, "MANUFACTURER: " + Build.MANUFACTURER);
+//                Log.i(TAG, "MODEL: " + Build.MODEL);
+//                Log.i(TAG, "PRODUCT: " + Build.PRODUCT);
+
                 attemptLogin();
                 break;
             default:
@@ -206,71 +243,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
+    private class MyHandlerActiveViwe extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Log.e(TAG, "# сообщенее: " + msg.what);
+            switch (msg.what) {
+                case ServerConnect.CONNECTION_SUCCESSFUL:
+                    shABoolean =false;
+                    showProgress(false);
+                    Toast.makeText(getApplicationContext(), "SUCCESSFUL", Toast.LENGTH_LONG).show();
+                    finish();
 
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
+                    break;
+                case ServerConnect.CONNECTION_ERROR:
+                    shABoolean =false;
+                    showProgress(false);
+                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+
+
+            }
+
+            // process incoming messages here
+
+
+        }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }
 

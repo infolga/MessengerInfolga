@@ -8,12 +8,11 @@ CREATE TABLE IF NOT EXISTS  users  (
    id_users  INTEGER NOT NULL ,
    phone  TEXT NOT NULL,
    email  TEXT NOT NULL,
-   password  TEXT NULL,
    first_name  TEXT NULL,
    last_name  TEXT NULL,
    is_active  INTEGER NULL DEFAULT 0,
-   updated_at INTEGER NULL,
-   last_at  NUMERIC NULL);
+   last_online_at  NUMERIC NULL,
+   photo_id INTEGER NULL);
 
 CREATE UNIQUE INDEX  phone_UNIQUE  ON  users  ( phone   );
 CREATE UNIQUE INDEX  email_UNIQUE  ON  users  ( email   );
@@ -23,7 +22,6 @@ CREATE TABLE IF NOT EXISTS  contacts  (
    id  INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
    id_contacts  INTEGER NOT NULL ,
    first_name  TEXT NULL,
-   middle_name  TEXT NULL,
    last_name  TEXT NULL,
    phone  TEXT NOT NULL,
    email  TEXT NOT NULL) ;
@@ -34,9 +32,11 @@ CREATE TABLE IF NOT EXISTS  conversation  (
    id  INTEGER NOT NULL  PRIMARY KEY  AUTOINCREMENT,
    id_conversation  INTEGER NOT NULL ,
    title  TEXT NULL,
+   photo_id INTEGER NULL,
    creator_id  INTEGER NOT NULL,
    created_at  INTEGER NULL,
-   updated_at  INTEGER NULL);
+   type  TEXT  NOT NULL,
+   name_conversation  INTEGER NULL);
 
 DROP TABLE IF EXISTS  messages ;
 
@@ -49,8 +49,7 @@ CREATE TABLE IF NOT EXISTS  messages  (
    message  TEXT NULL,
    attachment_thumb_url  TEXT NULL,
    attachment_url  TEXT NULL,
-   created_at  INTEGER NULL,
-   guid  TEXT NULL);
+   created_at  INTEGER NULL);
 
 DROP TABLE IF EXISTS  participants ;
 
@@ -58,20 +57,20 @@ CREATE TABLE IF NOT EXISTS  participants  (
    id  INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
    id_participants  INTEGER NOT NULL ,
    conversation_id  INTEGER NOT NULL,
-   users_id  INTEGER NOT NULL,
-   type  TEXT  NOT NULL);
+   users_id  INTEGER NOT NULL   );
 
 
 
 DROP TABLE IF EXISTS  us ;
 CREATE TABLE IF NOT EXISTS us (
   id  INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
-   phone  TEXT NOT NULL,
-   email  TEXT NOT NULL,
-   password  TEXT NULL,
-   first_name  TEXT NULL,
-   last_name  TEXT NULL,
-   f_id INTEGER NULL);
+  id_users  INTEGER NOT NULL ,
+  username TEXT NULL,
+  phone  TEXT NOT NULL,
+  email  TEXT NOT NULL,
+  first_name  TEXT NULL,
+  last_name  TEXT NULL,
+  photo_id INTEGER NULL);
 
 
 DROP TABLE IF EXISTS  access ;
@@ -97,4 +96,7 @@ CREATE TABLE IF NOT EXISTS  files  (
  VALUES ( 44,'FGHJKL',77,100);
   INSERT INTO access (users_id,token,created_at,valid_to)
  VALUES ( 44,'FG',70,1621672120471);
+
+
+
 
