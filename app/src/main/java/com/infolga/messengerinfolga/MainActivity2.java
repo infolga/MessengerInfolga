@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,7 +33,7 @@ public class MainActivity2 extends AppCompatActivity
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private EditText editText;
-
+    private Handler mHandlerActiveViwe ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +57,8 @@ public class MainActivity2 extends AppCompatActivity
         textView = (TextView) findViewById(R.id.textView2);
         // mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
-        DD_SQL.instanse(this);
+        //mHandlerActiveViwe = new LoginActivity.MyHandlerActiveViwe();
+        DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
 
         Intent intent= new Intent(this , LoginActivity.class);
         startActivity(intent);
@@ -143,8 +145,8 @@ public class MainActivity2 extends AppCompatActivity
             case R.id.button:
 
                 //textView.setText(DD_SQL.instanse(null).getAccessToken() );
-                Message message= new Message();
-                message.what=ServerConnect.SEND_MESSAGE;
+               // Message message= new Message();
+               // message.what=ServerConnect.SEND_MESSAGE;
 
 
                 String s      = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -179,8 +181,8 @@ public class MainActivity2 extends AppCompatActivity
                     "        </dependency>\n" +
                     "    </dependencies>\n" +
                     "</project>";
-                message.obj = editText.getText().toString();
-                ServerConnect.instanse(this).getmHandlerServerConnect().sendMessage( message);
+                //message.obj = s;
+              //  ServerConnect.instanse(this).getmHandlerServerConnect().sendMessage( message);
 
                 break;
 

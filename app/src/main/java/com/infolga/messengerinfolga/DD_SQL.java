@@ -1,18 +1,32 @@
 package com.infolga.messengerinfolga;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created by infol on 21.03.2018.
@@ -21,15 +35,28 @@ import java.util.Date;
 public class DD_SQL {
 
     private static final String TAG = "DD_SQL";
-
     private static final String DATABASE_NAME = "MyDB.db";
     private static final int DATABASE_VERSION = 1;
-    private   Context cont;
+
     private static DD_SQL dd_sql;
+    private Context cont;
     private MyDB DB;
+
+    private Handler mHandlerActiveViwe;
+    private Handler mHandlerDB;
+    private Thread listenerMessegeThread = new Thread() {
+        @Override
+        public void run() {
+            super.run();
+            Looper.prepare();
+            mHandlerDB = new MyHandlerDB();
+            Looper.loop();
+        }
+    };
 
     private DD_SQL(Context context) {
         DB = new MyDB(context);
+        listenerMessegeThread.start();
 
     }
 
@@ -48,6 +75,15 @@ public class DD_SQL {
         }
     }
 
+    public void setmHandlerActiveViwe(Handler mHandlerActiveViwe) {
+        this.mHandlerActiveViwe = mHandlerActiveViwe;
+    }
+
+    public void HsendMessage(Message msg) {
+        mHandlerDB.sendMessage(msg);
+    }
+
+
 //    public String getMyUser(){
 //        Cursor cursor = DB.getReadableDatabase().rawQuery(cont.getString(R.string. ), null);
 //        cursor.moveToFirst();
@@ -57,7 +93,6 @@ public class DD_SQL {
 //
 //    }
 
-
     public String getAccessToken() {
 
         Cursor cursor = DB.getReadableDatabase().rawQuery(cont.getString(R.string.SQLgetAccessToken), null);
@@ -65,23 +100,74 @@ public class DD_SQL {
         String s;
 
         if (cursor.getCount() == 0) {
-            s=null;
+            s = null;
         } else {
 
             Date currentTime = Calendar.getInstance().getTime();
             Log.v(currentTime.toString(), this.toString());
 
             long aLong = cursor.getLong(1);
-            Log.v(""+currentTime.getTime(), this.toString());
-            if (aLong<currentTime.getTime()){
-                s= null;
-            }else
-            {
-                s= cursor.getString(0);
+            Log.v("" + currentTime.getTime(), this.toString());
+            if (aLong < currentTime.getTime()) {
+                s = null;
+            } else {
+                s = cursor.getString(0);
             }
         }
         cursor.close();
         return s;
+    }
+
+    private void clearUs() {
+        DB.getReadableDatabase().execSQL(cont.getString(R.string.SQLgetDeleteUS));
+    }
+
+    private void clearAccess() {
+        DB.getReadableDatabase().execSQL(cont.getString(R.string.SQLgetDeleteAccess));
+    }
+
+    private class MyHandlerDB extends Handler {
+        @SuppressLint("HardwareIds")
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+
+            Log.e(TAG, "#: " + msg.what);
+            boolean b;
+            switch (msg.what) {
+                case MSG.USER_LOGIN:
+                    Bundle bundle = (Bundle) msg.obj;
+                    MyXML X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_USER_LOGIN);
+
+
+                    X.addChild(MSG.XML_ELEMENT_PHONE, bundle.getString(MSG.XML_ELEMENT_PHONE));
+                    Log.e(TAG, X.toString());
+                    X.addChild(MSG.XML_ELEMENT_PASSWORD, bundle.getString(MSG.XML_ELEMENT_PASSWORD));
+
+
+
+
+
+
+                    X.addChild(MSG.XML_ELEMENT_DRVISE_INFO,  Build.MANUFACTURER + " "+Build.MODEL );
+                    X.addChild(MSG.XML_ELEMENT_DRVISE_TOKEN,  FirebaseInstanceId.getInstance().getToken() );
+
+                    Log.e(TAG, X.toString());
+
+                    Message message = new Message();
+                    message.what = MSG.SEND_PACKEGE;
+                    message.obj = X.toString();
+                    clearUs();
+                    clearAccess();
+                    ServerConnect.instanse(null).HsendMessage(message);
+                    Log.e(TAG, X.toString());
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 
 

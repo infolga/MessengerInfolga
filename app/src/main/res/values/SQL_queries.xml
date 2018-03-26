@@ -1,3 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><resources>
     <string name="SQLgetAccessToken">SELECT token , valid_to FROM access ORDER BY valid_to DESC;</string>
+    <string name="SQLgetDeleteUS">DELETE FROM us;</string>
+    <string name="SQLgetDeleteAccess">DELETE FROM access;</string>
 </resources>

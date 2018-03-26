@@ -5,21 +5,22 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
 
@@ -29,58 +30,20 @@ import com.github.pinball83.maskededittext.MaskedEditText;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
     // UI references.
-    private MaskedEditText mEmailView;
+    private MaskedEditText mPhoneView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     private Handler mHandlerActiveViwe;
-    private boolean shABoolean =false;
+    private boolean shABoolean = false;
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
-                && keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            Log.e("CDA", "onKeyDown Called");
-            //onBackPressed();
-            ServerConnect.instanse(this).setAnswer(false);
-            shABoolean= false;
-            showProgress(false);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-        outState.putBoolean("shABoolean",shABoolean);
-        super.onSaveInstanceState(outState);
-    }
-    // получение ранее сохраненного состояния
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        shABoolean = savedInstanceState.getBoolean("shABoolean");
-        showProgress( shABoolean);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        Log.e("CDA", "onBackPressed Called");
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (MaskedEditText) findViewById(R.id.masked_edit_text);
+        mPhoneView = (MaskedEditText) findViewById(R.id.masked_edit_text);
 
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -105,8 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ServerConnect.instanse(this);
 
         mHandlerActiveViwe = new MyHandlerActiveViwe();
-        ServerConnect.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
-
+        DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -115,15 +77,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.e("CDA", "onKeyDown Called");
+            //onBackPressed();
 
-    private void attemptLogin() {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putBoolean("shABoolean", shABoolean);
+        super.onSaveInstanceState(outState);
+    }
+
+    // получение ранее сохраненного состояния
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        shABoolean = savedInstanceState.getBoolean("shABoolean");
+        showProgress(shABoolean);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Log.e("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
+
+    private boolean attemptLogin() {
 
         // Reset errors.
-        mEmailView.setError(null);
+        mPhoneView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = mEmailView.getUnmaskedText().toString();
+        String phone = mPhoneView.getUnmaskedText().toString();
         String password = mPasswordView.getText().toString();
         Log.w(phone, this.toString());
         Log.w(password, this.toString());
@@ -145,13 +144,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         // Check for a valid email address.
         if (TextUtils.isEmpty(phone)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mPhoneView.setError(getString(R.string.error_field_required));
+            focusView = mPhoneView;
             cancel = true;
         }
         if (!isEmailValid(phone)) {
-            mEmailView.setError(getString(R.string.error_invalid_phone));
-            focusView = mEmailView;
+            mPhoneView.setError(getString(R.string.error_invalid_phone));
+            focusView = mPhoneView;
             cancel = true;
         }
 
@@ -159,14 +158,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            return false;
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            shABoolean =true;
-            showProgress(true);
 
-            ServerConnect.instanse(this).setAnswer(true);
-            ServerConnect.instanse(this).getmHandlerServerConnect().sendEmptyMessage(ServerConnect.SERVER_CONNECT);
+            return true;
+            // ServerConnect.instanse(this).getmHandlerServerConnect().sendEmptyMessage(ServerConnect.SERVER_CONNECT);
         }
     }
 
@@ -224,18 +222,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.email_sign_in_button:
 
-//                Log.w("token", FirebaseInstanceId.getInstance().getToken());
-//                Toast toast = Toast.makeText(getApplicationContext(),
-//                        FirebaseInstanceId.getInstance().getToken(), Toast.LENGTH_SHORT);
-//                toast.show();
-//
-//
-//                Log.i(TAG, "BRAND: " + Build.ID);
-//                Log.i(TAG, "MANUFACTURER: " + Build.MANUFACTURER);
-//                Log.i(TAG, "MODEL: " + Build.MODEL);
-//                Log.i(TAG, "PRODUCT: " + Build.PRODUCT);
+                if (attemptLogin()) {
 
-                attemptLogin();
+
+
+
+
+                    shABoolean = true;
+                    showProgress(true);
+                    Bundle bundle = new Bundle();
+                    bundle.putCharSequence(MSG.XML_ELEMENT_PHONE, mPhoneView.getUnmaskedText().toString());
+                    bundle.putCharSequence(MSG.XML_ELEMENT_PASSWORD, mPasswordView.getText().toString());
+
+
+                    Message message = new Message();
+                    message.what=MSG.USER_LOGIN;
+                    message.obj= bundle;
+                    DD_SQL.instanse(this).HsendMessage(message);
+                    Log.e(TAG, mPhoneView.getUnmaskedText());
+                }
+
+
                 break;
             default:
                 break;
@@ -247,25 +254,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.e(TAG, "# сообщенее: " + msg.what);
-            switch (msg.what) {
-                case ServerConnect.CONNECTION_SUCCESSFUL:
-                    shABoolean =false;
-                    showProgress(false);
-                    Toast.makeText(getApplicationContext(), "SUCCESSFUL", Toast.LENGTH_LONG).show();
-                    finish();
-
-                    break;
-                case ServerConnect.CONNECTION_ERROR:
-                    shABoolean =false;
-                    showProgress(false);
-                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
-                    break;
-                default:
-                    break;
-
-
-            }
+//            Log.e(TAG, "# сообщенее: " + msg.what);
+//            switch (msg.what) {
+//                case ServerConnect.CONNECTION_SUCCESSFUL:
+//                    shABoolean = false;
+//                    showProgress(false);
+//                    Toast.makeText(getApplicationContext(), "SUCCESSFUL", Toast.LENGTH_LONG).show();
+//                    finish();
+//
+//                    break;
+//                case ServerConnect.CONNECTION_ERROR:
+//                    shABoolean = false;
+//                    showProgress(false);
+//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+//                    break;
+//                default:
+//                    break;
+//
+//
+//            }
 
             // process incoming messages here
 

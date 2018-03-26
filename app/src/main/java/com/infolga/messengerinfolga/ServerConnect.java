@@ -7,75 +7,116 @@ import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 /**
  * Created by infol on 24.03.2018.
  */
 
 public class ServerConnect {
-
-    public static final int SERVER_CONNECT = 1;
-    public static final int CONNECTION_SUCCESSFUL = 2;
-    public static final int CONNECTION_ERROR = 3;
-    public static final int SEND_MESSAGE = 4;
-
     private static final String TAG = "ServerConnect";
+
     private static ServerConnect serverConnect;
 
-    private boolean isAnswer;
+
     private Context cont;
     private Socket socket;
     private Handler mHandlerServerConnect;
-    private Handler mHandlerActiveViwe;
-    private Handler mHandlerDB;
+
     private String address;
     private String serverPort;
     private InputStream sin;
-
     private OutputStream sout;
     private Handler h;
+    private int countByte = -1;
+    private int offset = 0;
+    private ByteBuffer byteBuffer;
     Runnable waitAndReedMsg = new Runnable() {
         public void run() {
             Log.e(TAG, "waitAndReedMsg");
             try {
 
-               byte[]  b  = new byte[4];
-                sin.read(b);
+                if (countByte == -1) {
 
-                int ret = 0;
-                for (int i=0; i<4 ; i++) {
-                    ret <<= 8;
-                    Log.e(TAG, " i "+  (int)b[i]);
-                    ret |= (int)b[i] & 0xFF;
+                    byte[] b = new byte[4];
+                    int co = sin.read(b);
+                    Log.e(TAG, "co1 " + co);
+                    if (co == -1) {
+                        throw new IOException();
+                    }
+                    int ret = 0;
+                    for (int i = 0; i < 4; i++) {
+                        ret <<= 8;
+                        Log.e(TAG, " i " + (int) b[i]);
+                        ret |= (int) b[i] & 0xFF;
+                    }
+                    countByte = ret;
+                    byteBuffer = byteBuffer.allocate(countByte);
+                    offset = 0;
+                    Log.e(TAG, " countByte " + countByte);
+
+                } else {
+
+                    int countav = sin.available();
+                    Log.e(TAG, " available " + countav);
+                    Log.e(TAG, " offset " + offset);
+                    Log.e(TAG, " byteBuffer " + byteBuffer.toString());
+                    if (countav > 0) {
+
+                        if (countav + offset > countByte) {
+                            countav = countByte - offset;
+                        }
+                        byte[] bytes = new byte[countav];
+                        int realreed = sin.read(bytes);
+                        Log.e(TAG, " realreed " + realreed);
+                        for (int i = 0; i < countav; ++i)
+                            byteBuffer.put(bytes[i]);
+
+                        // byteBuffer.put(bytes, offset, countav-1);
+                        offset += countav;
+
+                        if (offset == countByte) {
+
+//                            byte[] by=Base64.decode(byteBuffer.array(), Base64.DEFAULT);
+//                            Log.e(TAG, " Base64 " + by.length);
+//                            String text = new String(by, "UTF-8");
+
+//                            byte[] by= byteBuffer.array();
+//                            int length = by.length;
+//
+//                            byte[] result = new byte[4];
+//
+//                            result[0] = (byte) (length >> 24);
+//                            result[1] = (byte) (length >> 16);
+//                            result[2] = (byte) (length >> 8);
+//                            result[3] = (byte) (length /*>> 0*/);
+//
+//                            sout.write(result);
+//
+//
+//                            sout.write(by);
+//                            //sout.flush();
+                            countByte = -1;
+                            offset = 0;
+                            Log.e(TAG, "text " + countByte + "  ");
+                        }
+                    }
                 }
-                byte[]  bytes  = new byte[ret];
-                Log.e(TAG, "t "+sin.read(bytes));
-                b= Base64.decode(bytes,Base64.DEFAULT);
-
-                String text = new String(b, "UTF-8");
-                Log.e(TAG, "text "+ret+"  " + text);
-
-
-
             } catch (IOException e) {
                 e.printStackTrace();
                 try {
+                    h.removeCallbacks(waitAndReedMsg);
                     socket.close();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             }
             if (!socket.isClosed()) {
-                h.post(waitAndReedMsg);
+                h.postDelayed(waitAndReedMsg, 70);
             }
         }
     };
@@ -97,7 +138,6 @@ public class ServerConnect {
             Looper.loop();
         }
     };
-
     private ServerConnect(Context C) {
         cont = C;
         address = cont.getString(R.string.localaddress);
@@ -119,21 +159,8 @@ public class ServerConnect {
         }
     }
 
-    public void setmHandlerActiveViwe(Handler mHandlerActiveViwe) {
-        this.mHandlerActiveViwe = mHandlerActiveViwe;
-    }
-
-    public void setmHandlerDB(Handler mHandlerDB) {
-        this.mHandlerDB = mHandlerDB;
-    }
-
-    public Handler getmHandlerServerConnect() {
-        return mHandlerServerConnect;
-    }
-
-
-    public void setAnswer(boolean answer) {
-        isAnswer = answer;
+    public void HsendMessage(Message msg) {
+        mHandlerServerConnect.sendMessage(msg);
     }
 
     private boolean isConnect() {
@@ -151,21 +178,31 @@ public class ServerConnect {
         socket = new Socket(address, Integer.parseInt(serverPort));
         sin = socket.getInputStream();
         sout = socket.getOutputStream();
-
-
-
         h.postDelayed(waitAndReedMsg, 1000);
     }
 
-    private void Send_Message(Message msg) throws  IOException{
+    private void SendPackege(String str) throws IOException {
 
         if (!isConnect()) {
             Connect();
         }
-        Log.e(TAG, (String) msg.obj);
-        byte[] bd =((String) msg.obj).getBytes("UTF-8");
-        sout.write(Base64.encode(bd,Base64.DEFAULT));
+        // Log.e(TAG, (String) msg.obj);
+        byte[] bd = str.getBytes("UTF-8");
 
+        byte[] bd3 = Base64.encode(bd, Base64.DEFAULT);
+
+        int length = bd3.length;
+        Log.e(TAG, "length ms " + length);
+        byte[] result = new byte[4];
+
+        result[0] = (byte) (length >> 24);
+        result[1] = (byte) (length >> 16);
+        result[2] = (byte) (length >> 8);
+        result[3] = (byte) (length /*>> 0*/);
+
+        sout.write(result);
+        sout.write(bd3);
+        sout.flush();
 
     }
 
@@ -176,37 +213,19 @@ public class ServerConnect {
 
 
             Log.e(TAG, "#: " + msg.what);
-            boolean b;
-            switch (msg.what) {
-                case SERVER_CONNECT:
-
-                    if (isConnect()) {
-                        b = isAnswer ? mHandlerActiveViwe.sendEmptyMessage(CONNECTION_SUCCESSFUL) : false;
-                    } else {
-                        try {
-                            Connect();
-                            b = isAnswer ? mHandlerActiveViwe.sendEmptyMessage(CONNECTION_SUCCESSFUL) : false;
-                        } catch (IOException e) {
-                            b = isAnswer ? mHandlerActiveViwe.sendEmptyMessage(CONNECTION_ERROR) : false;
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-                case SEND_MESSAGE:
-                    try {
-                         Send_Message(msg);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            try {
+                switch (msg.what) {
+                    case MSG.SEND_PACKEGE:
+                        SendPackege((String) msg.obj);
+                        break;
 
 
-                    break;
-
-                default:
-                    break;
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            isAnswer = true;
         }
     }
 

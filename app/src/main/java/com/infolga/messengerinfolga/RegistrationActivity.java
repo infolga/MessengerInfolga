@@ -1,6 +1,8 @@
 package com.infolga.messengerinfolga;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +11,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
-
-
     private static final String TAG = "RegistrationActivity";
 
     private MaskedEditText mPhoneView;
@@ -24,6 +25,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private EditText mFirstNameView;
     private EditText mLastNameView;
     private EditText mEmailNameView;
+    private Handler mHandlerActiveViwe;
+
+
 
     @Override
     public void onClick(View view) {
@@ -57,6 +61,10 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
+
+
+        mHandlerActiveViwe = new  MyHandlerActiveViwe();
+        DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
     }
 
     @Override
@@ -168,4 +176,34 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         return password.equals(password2);
     }
 
-}
+    private class MyHandlerActiveViwe extends Handler{
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+//
+//            Log.e(TAG, msg.toString());
+//
+//
+//            switch (msg.what) {
+//                case ServerConnect.CONNECTION_SUCCESSFUL:
+//
+//
+//                    Toast.makeText(getApplicationContext(), "SUCCESSFUL", Toast.LENGTH_LONG).show();
+//                    finish();
+//
+//                    break;
+//                case ServerConnect.CONNECTION_ERROR:
+//
+//
+//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+//                    break;
+//                default:
+//                    break;
+//
+//
+//            }
+//        }
+    }
+
+}}
