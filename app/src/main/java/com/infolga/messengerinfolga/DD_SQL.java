@@ -127,12 +127,13 @@ public class DD_SQL {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             MyXML X;
-
+            Bundle bundle;
+            Message message;
             Log.e(TAG, "#: " + msg.what);
             boolean b;
             switch (msg.what) {
                 case MSG.USER_LOGIN:
-                    Bundle bundle = (Bundle) msg.obj;
+                    bundle = (Bundle) msg.obj;
                     X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_USER_LOGIN);
 
 
@@ -146,7 +147,7 @@ public class DD_SQL {
 
                     Log.e(TAG, X.toString());
 
-                    Message message = new Message();
+                    message = new Message();
                     message.what = MSG.SEND_PACKEGE;
                     message.obj = X.toString();
                     clearUs();
@@ -166,6 +167,30 @@ public class DD_SQL {
                         e.printStackTrace();
                     }
                     break;
+                case MSG.USER_REGISTRATION:
+                    bundle = (Bundle) msg.obj;
+                    X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_USER_REGISTRATION);
+
+                    X.addChild(MSG.XML_ELEMENT_PHONE, bundle.getString(MSG.XML_ELEMENT_PHONE));
+                    X.addChild(MSG.XML_ELEMENT_PASSWORD, bundle.getString(MSG.XML_ELEMENT_PASSWORD));
+
+                    X.addChild(MSG.XML_ELEMENT_USER_NAME, bundle.getString(MSG.XML_ELEMENT_USER_NAME));
+                    X.addChild(MSG.XML_ELEMENT_FIRST_NAME, bundle.getString(MSG.XML_ELEMENT_FIRST_NAME));
+                    X.addChild(MSG.XML_ELEMENT_LAST_NAME, bundle.getString(MSG.XML_ELEMENT_LAST_NAME));
+                    X.addChild(MSG.XML_ELEMENT_EMAIL, bundle.getString(MSG.XML_ELEMENT_EMAIL));
+
+
+                    X.addChild(MSG.XML_ELEMENT_DRVISE_INFO, Build.MANUFACTURER + " " + Build.MODEL);
+                    X.addChild(MSG.XML_ELEMENT_DRVISE_TOKEN, FirebaseInstanceId.getInstance().getToken());
+                    message = new Message();
+                    message.what = MSG.SEND_PACKEGE;
+                    message.obj = X.toString();
+                    clearUs();
+                    clearAccess();
+                    ServerConnect.instanse(null).HsendMessage(message);
+                    Log.e(TAG, X.toString());
+
+                    break;
 
 
                 default:
@@ -184,12 +209,47 @@ public class DD_SQL {
                     case MSG.XML_USER_LOGIN:
                         userLoginResponse(XML);
                         break;
+                    case MSG.XML_USER_REGISTRATION:
+                        userRegistrationResponse(XML);
+
+                        break;
                 }
 
 
             }
 
 
+        }
+
+        private void userRegistrationResponse(MyXML XML) {
+            int result = XML.getAttributeResult();
+
+
+            Message message = new Message();
+            message.what = XML.getAttributeResult();
+            mHandlerActiveViwe.sendMessage(message);
+            switch (result) {
+                case MSG.XML_RESULT_VALUES_OK:
+                    message = new Message();
+                    message.what = MSG.USER_REGISTRATION_SUCCESSFUL;
+
+                    mHandlerActiveViwe.sendMessage(message);
+                    break;
+                case MSG.XML_RESULT_VALUES_PHONE_UNAVAILABLE:
+                    message = new Message();
+                    message.what = MSG.USER_REGISTRATION_FAIL_PHONE;
+
+                    mHandlerActiveViwe.sendMessage(message);
+                    break;
+                case MSG.XML_RESULT_VALUES_USER_NAME_UNAVAILABLE:
+                    message = new Message();
+                    message.what = MSG.USER_REGISTRATION_FAIL_USER_NAME;
+
+                    mHandlerActiveViwe.sendMessage(message);
+                    break;
+
+
+            }
         }
 
         private void userLoginResponse(MyXML XML) {
@@ -212,8 +272,8 @@ public class DD_SQL {
                     message.what = MSG.USER_LOGIN_FAIL_PHONE;
                     mHandlerActiveViwe.sendMessage(message);
                     break;
-                    default:
-                        break;
+                default:
+                    break;
             }
         }
 

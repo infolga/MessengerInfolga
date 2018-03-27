@@ -41,7 +41,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_registration">Registration</string>
     <string name="action_first_name">*First name </string>
     <string name="action_user_name">*User name</string>
     <string name="action_email">Email</string>

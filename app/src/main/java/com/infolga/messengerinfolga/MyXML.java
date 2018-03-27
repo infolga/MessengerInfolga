@@ -62,9 +62,9 @@ public class MyXML {
                 buf.setAttribute("id", "" + MSG.XML_USER_LOGIN);
                 buf.addContent(new Comment("user.login"));
                 break;
-            case MSG.XML_USER_CREATE:
-                buf.setAttribute("id", "" + MSG.XML_USER_CREATE);
-                buf.addContent(new Comment("user.create"));
+            case MSG.XML_USER_REGISTRATION:
+                buf.setAttribute("id", "" + MSG.XML_USER_REGISTRATION);
+                buf.addContent(new Comment("user.registration"));
                 break;
             default:
                 break;

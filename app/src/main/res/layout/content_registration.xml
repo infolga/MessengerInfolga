@@ -15,7 +15,22 @@
     tools:context="com.infolga.messengerinfolga.RegistrationActivity"
     tools:showIn="@layout/activity_registration">
 
+    <ProgressBar
+        android:id="@+id/registration_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/registration_form"
+        app:layout_constraintStart_toStartOf="@+id/registration_form"
+        app:layout_constraintTop_toTopOf="@+id/registration_form" />
+
+
+
     <ScrollView
+        android:id="@+id/registration_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -36,8 +51,8 @@
                     android:hint="@string/prompt_phone"
                     android:inputType="number"
                     app:deleteChar="_"
-                    app:format="380[1][2][3][4][5][6][7][8][9]"
-                    app:mask="+380 (**) ***-**-**"
+                    app:format="38033333333[1]"
+                    app:mask=  "+3803333333*"
                     app:notMaskedSymbol="*"
                     app:replacementChar="_" />
 
@@ -57,7 +72,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="0987654321" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -75,7 +91,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="0987654321" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -94,7 +111,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="tester2" />
 
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
@@ -111,7 +129,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="tester22" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -129,7 +148,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="tester266" />
 
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
@@ -146,11 +166,14 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="tester@mm" />
 
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
+
+
 
 
     </ScrollView>

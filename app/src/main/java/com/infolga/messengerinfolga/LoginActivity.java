@@ -224,10 +224,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 if (attemptLogin()) {
 
-
-
-
-
                     shABoolean = true;
                     showProgress(true);
                     Bundle bundle = new Bundle();
@@ -249,6 +245,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
+    }
 
     private class MyHandlerActiveViwe extends Handler {
         @Override
