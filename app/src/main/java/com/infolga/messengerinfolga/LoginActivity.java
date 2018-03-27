@@ -254,27 +254,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-//            Log.e(TAG, "# сообщенее: " + msg.what);
-//            switch (msg.what) {
-//                case ServerConnect.CONNECTION_SUCCESSFUL:
-//                    shABoolean = false;
-//                    showProgress(false);
-//                    Toast.makeText(getApplicationContext(), "SUCCESSFUL", Toast.LENGTH_LONG).show();
-//                    finish();
-//
-//                    break;
-//                case ServerConnect.CONNECTION_ERROR:
-//                    shABoolean = false;
-//                    showProgress(false);
-//                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
-//                    break;
-//                default:
-//                    break;
-//
-//
-//            }
+            View focusView = null;
 
-            // process incoming messages here
+            Log.e(TAG, "# сообщенее: " + msg.what);
+            switch (msg.what) {
+                case MSG.USER_LOGIN_SUCCESSFUL :
+                    shABoolean = false;
+                    showProgress(false);
+                    finish();
+
+                    break;
+                case MSG.USER_LOGIN_FAIL_PASSWORD:
+                    shABoolean = false;
+                    showProgress(false);
+                    mPasswordView.setError(getString(R.string.error_Valid_password));
+                    focusView = mPasswordView;
+                    focusView.requestFocus();
+
+                    break;
+                case MSG.USER_LOGIN_FAIL_PHONE:
+                    shABoolean = false;
+                    showProgress(false);
+                    mPhoneView.setError(getString(R.string.error_invalid_phone));
+                    focusView = mPhoneView;
+                    focusView.requestFocus();
+                    break;
+                default:
+                    break;
+
+
+            }
+
+
 
 
         }

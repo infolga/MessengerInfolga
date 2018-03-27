@@ -2,31 +2,26 @@ package com.infolga.messengerinfolga;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.jdom2.JDOMException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
-
-import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created by infol on 21.03.2018.
@@ -131,14 +126,14 @@ public class DD_SQL {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
+            MyXML X;
 
             Log.e(TAG, "#: " + msg.what);
             boolean b;
             switch (msg.what) {
                 case MSG.USER_LOGIN:
                     Bundle bundle = (Bundle) msg.obj;
-                    MyXML X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_USER_LOGIN);
+                    X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_USER_LOGIN);
 
 
                     X.addChild(MSG.XML_ELEMENT_PHONE, bundle.getString(MSG.XML_ELEMENT_PHONE));
@@ -146,12 +141,8 @@ public class DD_SQL {
                     X.addChild(MSG.XML_ELEMENT_PASSWORD, bundle.getString(MSG.XML_ELEMENT_PASSWORD));
 
 
-
-
-
-
-                    X.addChild(MSG.XML_ELEMENT_DRVISE_INFO,  Build.MANUFACTURER + " "+Build.MODEL );
-                    X.addChild(MSG.XML_ELEMENT_DRVISE_TOKEN,  FirebaseInstanceId.getInstance().getToken() );
+                    X.addChild(MSG.XML_ELEMENT_DRVISE_INFO, Build.MANUFACTURER + " " + Build.MODEL);
+                    X.addChild(MSG.XML_ELEMENT_DRVISE_TOKEN, FirebaseInstanceId.getInstance().getToken());
 
                     Log.e(TAG, X.toString());
 
@@ -163,11 +154,70 @@ public class DD_SQL {
                     ServerConnect.instanse(null).HsendMessage(message);
                     Log.e(TAG, X.toString());
                     break;
+
+                case MSG.PACKAGE_ARRIVES:
+                    try {
+                        X = new MyXML((String) msg.obj);
+                        analisXML(X);
+
+                    } catch (JDOMException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+
                 default:
                     break;
             }
 
         }
+
+        private void analisXML(MyXML XML) {
+
+            if (MSG.XML_TYPE_REQUEST.equals(XML.getTypeXML())) {
+
+            } else {
+
+                switch (XML.getIdActionsXML()) {
+                    case MSG.XML_USER_LOGIN:
+                        userLoginResponse(XML);
+                        break;
+                }
+
+
+            }
+
+
+        }
+
+        private void userLoginResponse(MyXML XML) {
+            int result = XML.getAttributeResult();
+            Message message;
+            switch (result) {
+                case MSG.XML_RESULT_VALUES_OK:
+                    message = new Message();
+                    message.what = MSG.USER_LOGIN_SUCCESSFUL;
+
+                    mHandlerActiveViwe.sendMessage(message);
+                    break;
+                case MSG.XML_RESULT_VALUES_INCORRECT_PASSWORD:
+                    message = new Message();
+                    message.what = MSG.USER_LOGIN_FAIL_PASSWORD;
+                    mHandlerActiveViwe.sendMessage(message);
+                    break;
+                case MSG.XML_RESULT_VALUES_PHONE_NOT_FOUND:
+                    message = new Message();
+                    message.what = MSG.USER_LOGIN_FAIL_PHONE;
+                    mHandlerActiveViwe.sendMessage(message);
+                    break;
+                    default:
+                        break;
+            }
+        }
+
+
     }
 
 

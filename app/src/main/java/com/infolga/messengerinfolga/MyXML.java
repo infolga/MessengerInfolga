@@ -14,10 +14,10 @@ import java.io.InputStream;
 
 public class MyXML {
 
-
     private Element root;
     private Element buf;
     private Document doc;
+
 
     public MyXML(String str) throws JDOMException, IOException {
 
@@ -25,7 +25,14 @@ public class MyXML {
         SAXBuilder saxBuilder = new SAXBuilder();
         doc = saxBuilder.build(is);
         root = doc.getRootElement();
+        buf=root;
     }
+
+
+    public int getAttributeResult() {
+        return Integer.parseInt(buf.getAttributeValue("result"));
+    }
+
 
     public String getTypeXML() {
         return root.getName();
@@ -64,6 +71,47 @@ public class MyXML {
         }
     }
 
+    public MyXML setNameRoot(String name) {
+        root.setName(name);
+
+        return this;
+    }
+
+    public MyXML setAttributeRoot(String name, String value) {
+        root.setAttribute(name,value);
+        return this;
+    }
+
+    public MyXML removeAttributeRoot(String name){
+        root.removeAttribute(name);
+        return this;
+    }
+    public MyXML jumpToChildFromRoot(String name){
+        buf = root.getChild(name);
+        return this;
+    }
+    public MyXML jumpToChildFrom(String name){
+        buf = buf.getChild(name);
+        return this;
+    }
+
+    public MyXML setName (String name) {
+        buf.setName(name);
+        return this;
+    }
+
+    public MyXML setAttribute(String name, String value) {
+        buf.setAttribute(name,value);
+        return this;
+    }
+
+    public MyXML removeAttribute(String name){
+        buf.removeAttribute(name);
+        return this;
+    }
+
+
+
 
     public MyXML addChild(String name) {
         buf.addContent(new Element(name));
@@ -83,7 +131,7 @@ public class MyXML {
         return this;
     }
 
-    public MyXML setAtribut(String name, String value) {
+    public MyXML setAtribute(String name, String value) {
         buf.setAttribute(name, value);
         return this;
     }
@@ -94,9 +142,11 @@ public class MyXML {
             d = new Document(root);
         }
         String s = (new XMLOutputter(Format.getPrettyFormat())).outputString(d);
+
         return s;
     }
 
 
 }
+
 

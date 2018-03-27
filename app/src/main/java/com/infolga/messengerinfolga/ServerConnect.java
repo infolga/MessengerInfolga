@@ -41,68 +41,44 @@ public class ServerConnect {
             try {
 
                 if (countByte == -1) {
-
                     byte[] b = new byte[4];
                     int co = sin.read(b);
-                    Log.e(TAG, "co1 " + co);
                     if (co == -1) {
                         throw new IOException();
                     }
                     int ret = 0;
                     for (int i = 0; i < 4; i++) {
                         ret <<= 8;
-                        Log.e(TAG, " i " + (int) b[i]);
                         ret |= (int) b[i] & 0xFF;
                     }
                     countByte = ret;
                     byteBuffer = byteBuffer.allocate(countByte);
                     offset = 0;
-                    Log.e(TAG, " countByte " + countByte);
-
                 } else {
-
                     int countav = sin.available();
-                    Log.e(TAG, " available " + countav);
-                    Log.e(TAG, " offset " + offset);
-                    Log.e(TAG, " byteBuffer " + byteBuffer.toString());
                     if (countav > 0) {
-
                         if (countav + offset > countByte) {
                             countav = countByte - offset;
                         }
                         byte[] bytes = new byte[countav];
                         int realreed = sin.read(bytes);
-                        Log.e(TAG, " realreed " + realreed);
+
                         for (int i = 0; i < countav; ++i)
                             byteBuffer.put(bytes[i]);
 
-                        // byteBuffer.put(bytes, offset, countav-1);
                         offset += countav;
-
                         if (offset == countByte) {
+                            byte[] by = Base64.decode(byteBuffer.array(), Base64.DEFAULT);
+                            String text = new String(by, "UTF-8");
 
-//                            byte[] by=Base64.decode(byteBuffer.array(), Base64.DEFAULT);
-//                            Log.e(TAG, " Base64 " + by.length);
-//                            String text = new String(by, "UTF-8");
-
-//                            byte[] by= byteBuffer.array();
-//                            int length = by.length;
-//
-//                            byte[] result = new byte[4];
-//
-//                            result[0] = (byte) (length >> 24);
-//                            result[1] = (byte) (length >> 16);
-//                            result[2] = (byte) (length >> 8);
-//                            result[3] = (byte) (length /*>> 0*/);
-//
-//                            sout.write(result);
-//
-//
-//                            sout.write(by);
-//                            //sout.flush();
+                            Log.e(TAG, "text " + text);
+                            Message message   =  new Message();
+                            message.what= MSG.PACKAGE_ARRIVES;
+                            message.obj = text;
+                            DD_SQL.instanse(null).HsendMessage(message);
                             countByte = -1;
                             offset = 0;
-                            Log.e(TAG, "text " + countByte + "  ");
+
                         }
                     }
                 }
@@ -138,6 +114,7 @@ public class ServerConnect {
             Looper.loop();
         }
     };
+
     private ServerConnect(Context C) {
         cont = C;
         address = cont.getString(R.string.localaddress);
