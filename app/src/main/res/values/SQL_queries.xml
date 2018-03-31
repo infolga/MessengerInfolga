@@ -1,5 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?><resources>
-    <string name="SQLgetAccessToken">SELECT token , valid_to FROM access ORDER BY valid_to DESC;</string>
-    <string name="SQLgetDeleteUS">DELETE FROM us;</string>
+<?xml version="1.0" encoding="utf-8"?><resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="SQLgetAccessToken">SELECT token  FROM access ;</string>
+    <string name="SQLgetDeleteUS">DELETE FROM users;</string>
     <string name="SQLgetDeleteAccess">DELETE FROM access;</string>
+
+    <string name="SQLgetAddUs"  >INSERT INTO users (users_id,user_name,phone,email,first_name,last_name,is_active,last_online_at) VALUES ( %1$s,\'%2$s\',\'%3$s\',\'%4$s\',\'%5$s\',\'%6$s\',%7$s,\'%8$s\');</string>
+    <string name="SQLgetAddToken"  >INSERT INTO access (users_id,token) VALUES ( %1$s,\'%2$s\' );</string>
+    <string name="SQLgetAddcontact"  >INSERT INTO contacts (contacts_id,first_name,last_name,phone) VALUES ( %1$s,\'%2$s\',\'%3$s\',\'%4$s\' );</string>
+    <string name="SQLgetgetcontact"  >SELECT *  FROM contacts WHERE contacts_id= %1$s;</string>
+    <string name="SQLgetUpdatecontact"  >update   contacts set    first_name= \'%2$s\',last_name=\'%3$s\',phone=\'%4$s\' where contacts_id = %1$s ;</string>
+    <string name="SQLgetgetuserslike"  >SELECT *  FROM users WHERE user_name LIKE \'%1$s\';</string>
+    <string name="SQLgetgetuserslikeCount"  >SELECT count(*)  FROM users WHERE user_name LIKE \'%1$s\';</string>
+    <string name="SQLgetgetCountUserWhereId"  >SELECT count(*)  FROM users WHERE users_id = %1$s;</string>
+    <string name="SQLgetUpdateUs"  >update   users set user_name =\'%2$s\',phone=\'%3$s\',email=\'%4$s\',first_name=\'%5$s\',last_name=\'%6$s\',is_active=%7$s,last_online_at=\'%8$s\' WHERE  users_id = %1$s ;</string>
+
+
+
 </resources>

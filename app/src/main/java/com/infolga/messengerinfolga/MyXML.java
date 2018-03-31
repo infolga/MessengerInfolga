@@ -11,6 +11,7 @@ import org.jdom2.output.XMLOutputter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class MyXML {
 
@@ -43,6 +44,13 @@ public class MyXML {
         return Integer.parseInt(buf.getAttributeValue("id"));
     }
 
+
+    public List<Element> getCildrenListElement(String name) {
+        buf = root.getChild("actions");
+        return  buf.getChildren(name);
+    }
+
+
     public String getValueInActionsXML(String s) {
         buf = root.getChild("actions");
         buf = buf.getChild(s);
@@ -66,6 +74,15 @@ public class MyXML {
                 buf.setAttribute("id", "" + MSG.XML_USER_REGISTRATION);
                 buf.addContent(new Comment("user.registration"));
                 break;
+            case MSG.XML_CONTACT_ADD:
+                buf.setAttribute("id", "" + MSG.XML_CONTACT_ADD);
+                buf.addContent(new Comment("contact.add"));
+                break;
+            case MSG.XML_GET_USERS_FROM_LIKE:
+                buf.setAttribute("id", "" + MSG.XML_GET_USERS_FROM_LIKE);
+                buf.addContent(new Comment("get.user_from_like"));
+                break;
+
             default:
                 break;
         }
@@ -110,12 +127,25 @@ public class MyXML {
         return this;
     }
 
+    public static Element addChild(Element root, String name, String text) {
+
+        Element child = new Element(name);
+        child.setText(text);
+        root.addContent(child);
+        return root;
+    }
 
 
 
     public MyXML addChild(String name) {
         buf.addContent(new Element(name));
         buf = buf.getChild(name);
+        return this;
+    }
+
+    public MyXML addChildElement(Element name) {
+        buf.addContent(name);
+
         return this;
     }
 
@@ -141,9 +171,9 @@ public class MyXML {
         if (d == null) {
             d = new Document(root);
         }
-        String s = (new XMLOutputter(Format.getPrettyFormat())).outputString(d);
 
-        return s;
+
+        return (new XMLOutputter(Format.getPrettyFormat())).outputString(d);
     }
 
 

@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
 
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mPhoneView = (MaskedEditText) findViewById(R.id.masked_edit_text);
+        mPhoneView =   findViewById(R.id.masked_edit_text);
 
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -58,11 +59,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton =   findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(this);
 
 
-        Button registration_button = (Button) findViewById(R.id.registration_button);
+        Button registration_button =   findViewById(R.id.registration_button);
         registration_button.setOnClickListener(this);
 
         ServerConnect.instanse(this);
@@ -77,13 +78,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private static long back_pressed;
+
+
+
+
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
                 && keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
             Log.e("CDA", "onKeyDown Called");
-            //onBackPressed();
+
+            if (!shABoolean)
+            onBackPressed();
 
             return true;
         }
@@ -108,6 +117,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onBackPressed() {
+
+
+
+
         Log.e("CDA", "onBackPressed Called");
         Intent setIntent = new Intent(Intent.ACTION_MAIN);
         setIntent.addCategory(Intent.CATEGORY_HOME);
@@ -122,7 +135,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = mPhoneView.getUnmaskedText().toString();
+        String phone = mPhoneView.getUnmaskedText();
         String password = mPasswordView.getText().toString();
         Log.w(phone, this.toString());
         Log.w(password, this.toString());
@@ -262,6 +275,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 case MSG.USER_LOGIN_SUCCESSFUL :
                     shABoolean = false;
                     showProgress(false);
+
+
+                    Log.e(TAG,"USER_LOGIN_SUCCESSFUL");
                     finish();
 
                     break;

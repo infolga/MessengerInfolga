@@ -5,17 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_group"
+            android:id="@+id/new_group"
             android:icon="@drawable/icons8useraccountfilled50"
-            android:title="Group" />
+            android:title="New group" />
         <item
-            android:id="@+id/nav_radio"
+            android:id="@+id/new_channal"
             android:icon="@drawable/icons8radiofilled50"
-            android:title="Channal" />
+            android:title="New channal" />
+        <item
+            android:id="@+id/new_chat"
+            android:icon="@drawable/icons8_chat_filled_50"
+            android:title="New chat" />
         <item
             android:id="@+id/nav_contacts"
             android:icon="@drawable/icons8_contacts_50"
-            android:title="contacts" />
+            android:title="Contacts" />
         <item
             android:id="@+id/nav_Seting"
             android:icon="@drawable/ic_menu_manage"

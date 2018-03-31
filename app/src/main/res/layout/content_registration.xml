@@ -51,8 +51,8 @@
                     android:hint="@string/prompt_phone"
                     android:inputType="number"
                     app:deleteChar="_"
-                    app:format="38033333333[1]"
-                    app:mask=  "+3803333333*"
+                    app:format="3803333333[1][2]"
+                    app:mask=  "+380333333**"
                     app:notMaskedSymbol="*"
                     app:replacementChar="_" />
 

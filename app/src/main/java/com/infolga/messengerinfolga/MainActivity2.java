@@ -2,7 +2,6 @@ package com.infolga.messengerinfolga;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,19 +12,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
+    private final String TAG = "MainActivity2";
 
     private Button button;
     private TextView textView;
@@ -33,16 +33,17 @@ public class MainActivity2 extends AppCompatActivity
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private EditText editText;
-    private Handler mHandlerActiveViwe ;
+    private Handler mHandlerActiveViwe;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -51,17 +52,21 @@ public class MainActivity2 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        button = (Button) findViewById(R.id.button);
+        button = findViewById(R.id.button);
         button.setOnClickListener(this);
-        editText = (EditText) findViewById(R.id.editText);
-        textView = (TextView) findViewById(R.id.textView2);
+        editText = findViewById(R.id.editText);
+        textView = findViewById(R.id.textView2);
         // mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
         //mHandlerActiveViwe = new LoginActivity.MyHandlerActiveViwe();
         DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
+        ServerConnect.instanse(this);
+        Intent intent = new Intent(this, LoginActivity.class);
 
-        Intent intent= new Intent(this , LoginActivity.class);
-        startActivity(intent);
+        if (DD_SQL.instanse(this).getAccessToken() == null) {
+            startActivity(intent);
+        }
+
 //
 //        // use a linear layout manager
 //        mLayoutManager = new LinearLayoutManager(this);
@@ -71,6 +76,12 @@ public class MainActivity2 extends AppCompatActivity
 //        mAdapter = new MyAdapter(myDataset);
 //        mRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
     }
 
     @Override
@@ -122,15 +133,18 @@ public class MainActivity2 extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_group) {
+        if (id == R.id.new_group) {
 
-        } else if (id == R.id.nav_radio) {
+        } else if (id == R.id.new_channal) {
+
+        } else if (id == R.id.new_chat) {
+
+            Intent intent = new Intent(this, Find_user.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_contacts) {
 
         } else if (id == R.id.nav_Seting) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -140,49 +154,18 @@ public class MainActivity2 extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-
+        Message message;
         switch (view.getId()) {
             case R.id.button:
 
-                //textView.setText(DD_SQL.instanse(null).getAccessToken() );
-               // Message message= new Message();
-               // message.what=ServerConnect.SEND_MESSAGE;
+
+                Log.e(TAG, "getItemCount  " + DD_SQL.instanse(null).SQL_select_count_into_users_where_like(""));
 
 
-                String s      = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
-                    "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                    "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-                    "    <modelVersion>4.0.0</modelVersion>\n" +
-                    "\n" +
-                    "    <groupId>123</groupId>\n" +
-                    "    <artifactId>345</artifactId>\n" +
-                    "    <version>1.0-SNAPSHOT</version>\n" +
-                    "    <build>\n" +
-                    "        <plugins>\n" +
-                    "            <plugin>\n" +
-                    "                <groupId>org.apache.maven.plugins</groupId>\n" +
-                    "                <artifactId>maven-compiler-plugin</artifactId>\n" +
-                    "                <configuration>\n" +
-                    "                    <source>1.6</source>\n" +
-                    "                    <target>1.6</target>\n" +
-                    "                </configuration>\n" +
-                    "            </plugin>\n" +
-                    "        </plugins>\n" +
-                    "    </build>\n" +
-                    "\n" +
-                    "    <dependencies>\n" +
-                    "\n" +
-                    "        <dependency>\n" +
-                    "            <groupId>io.netty</groupId>\n" +
-                    "            <artifactId>netty-all</artifactId> <!-- Use 'netty-all' for 4.0 or above -->\n" +
-                    "            <version>4.1.16.Final</version>\n" +
-                    "            <scope>compile</scope>\n" +
-                    "        </dependency>\n" +
-                    "    </dependencies>\n" +
-                    "</project>";
-                //message.obj = s;
-              //  ServerConnect.instanse(this).getmHandlerServerConnect().sendMessage( message);
+//                message = new Message();
+//                message.what = MSG.READ_ALL_CONTACT;
+//                DD_SQL.instanse(this).HsendMessage(message);
+
 
                 break;
 

@@ -49,7 +49,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     showProgress(true);
 
                     Bundle bundle = new Bundle();
-                    bundle.putCharSequence(MSG.XML_ELEMENT_PHONE, mPhoneView.getUnmaskedText().toString());
+                    bundle.putCharSequence(MSG.XML_ELEMENT_PHONE, mPhoneView.getUnmaskedText());
                     bundle.putCharSequence(MSG.XML_ELEMENT_PASSWORD, mPasswordView.getText().toString());
                     bundle.putCharSequence(MSG.XML_ELEMENT_USER_NAME, mUserNameView.getText().toString());
                     bundle.putCharSequence(MSG.XML_ELEMENT_FIRST_NAME, mFirstNameView.getText().toString());
@@ -109,19 +109,19 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+          mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mPhoneView = (MaskedEditText) findViewById(R.id.masked_edit_text);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordReturnView = (EditText) findViewById(R.id.passwordReturn);
-        mUserNameView = (EditText) findViewById(R.id.user_name);
-        mFirstNameView = (EditText) findViewById(R.id.first_name);
-        mLastNameView = (EditText) findViewById(R.id.last_name);
-        mEmailNameView = (EditText) findViewById(R.id.email);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+
+        mPhoneView = findViewById(R.id.masked_edit_text);
+        mPasswordView = findViewById(R.id.password);
+        mPasswordReturnView = findViewById(R.id.passwordReturn);
+        mUserNameView = findViewById(R.id.user_name);
+        mFirstNameView = findViewById(R.id.first_name);
+        mLastNameView = findViewById(R.id.last_name);
+        mEmailNameView = findViewById(R.id.email);
+        floatingActionButton = findViewById(R.id.fab);
 
         floatingActionButton.setOnClickListener(this);
 
@@ -134,11 +134,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
 
     private boolean attemptRegistration() {
 
@@ -151,7 +146,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         mEmailNameView.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = mPhoneView.getUnmaskedText().toString();
+        String phone = mPhoneView.getUnmaskedText();
         String password = mPasswordView.getText().toString();
         String password2 = mPasswordReturnView.getText().toString();
         String username = mUserNameView.getText().toString();
