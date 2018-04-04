@@ -3,7 +3,7 @@ package com.infolga.messengerinfolga;
 import org.jdom2.Element;
 
 
-public class User {
+public class User   implements Myin{
     private int users_id;
     private String user_name;
     private String phone;

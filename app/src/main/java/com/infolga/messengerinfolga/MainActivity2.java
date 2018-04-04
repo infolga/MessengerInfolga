@@ -1,6 +1,5 @@
 package com.infolga.messengerinfolga;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,30 +9,30 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity2 extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener {
 
     private final String TAG = "MainActivity2";
 
     private Button button;
     private TextView textView;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+
     private EditText editText;
     private Handler mHandlerActiveViwe;
+
+    private MyAdapterMainActivity  myAdapterMainActivity;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +51,10 @@ public class MainActivity2 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        button = findViewById(R.id.button);
-        button.setOnClickListener(this);
-        editText = findViewById(R.id.editText);
-        textView = findViewById(R.id.textView2);
-        // mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
 
-        //mHandlerActiveViwe = new LoginActivity.MyHandlerActiveViwe();
+
+
+        mHandlerActiveViwe = new MyHandlerActiveViwe();
         DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
         ServerConnect.instanse(this);
         Intent intent = new Intent(this, LoginActivity.class);
@@ -67,21 +63,27 @@ public class MainActivity2 extends AppCompatActivity
             startActivity(intent);
         }
 
-//
-//        // use a linear layout manager
-//        mLayoutManager = new LinearLayoutManager(this);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//        // specify an adapter (see also next example)
-//        mAdapter = new MyAdapter(myDataset);
-//        mRecyclerView.setAdapter(mAdapter);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
+        recyclerView.setHasFixedSize(false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        myAdapterMainActivity = new MyAdapterMainActivity();
+        myAdapterMainActivity.SetOnItemClickListener(this);
+        recyclerView.setAdapter(myAdapterMainActivity);
+
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
         DD_SQL.instanse(this).setmHandlerActiveViwe(mHandlerActiveViwe);
+        myAdapterMainActivity.setInvalide();
+        myAdapterMainActivity.MSG_updete();
+        myAdapterMainActivity.notifyDataSetChanged();
+
     }
 
     @Override
@@ -106,23 +108,23 @@ public class MainActivity2 extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.search) {
-
-            Toast toast = Toast.makeText(getApplicationContext(), "dsfsdfsdf", Toast.LENGTH_SHORT);
-
-            View view = this.getCurrentFocus();
-            if (view != null) {
-                toast.show();
-
-                InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(this.getCurrentFocus(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-
-            }
-            return true;
-        }
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.search) {
+//
+//            Toast toast = Toast.makeText(getApplicationContext(), "dsfsdfsdf", Toast.LENGTH_SHORT);
+//
+//            View view = this.getCurrentFocus();
+//            if (view != null) {
+//                toast.show();
+//
+//                InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                inputMethodManager.showSoftInput(this.getCurrentFocus(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+//
+//            }
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -152,29 +154,37 @@ public class MainActivity2 extends AppCompatActivity
         return true;
     }
 
+
     @Override
-    public void onClick(View view) {
-        Message message;
-        switch (view.getId()) {
-            case R.id.button:
+    public void onItemClick(View view, Object o) {
+
+    }
+
+    private class MyHandlerActiveViwe extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
 
-                Log.e(TAG, "getItemCount  " + DD_SQL.instanse(null).SQL_select_count_into_users_where_like(""));
+            Log.e(TAG, "# сообщенее: " + msg.what);
+            switch (msg.what) {
+                case MSG.UPDATE_RECYCLER_VIEV:
+                    // myAdapterFindUser.invalideRV();
+                    myAdapterMainActivity.MSG_updete();
+                    myAdapterMainActivity.notifyDataSetChanged();
+                    break;
 
 
-//                message = new Message();
-//                message.what = MSG.READ_ALL_CONTACT;
-//                DD_SQL.instanse(this).HsendMessage(message);
 
 
-                break;
+                default:
+                    break;
 
-            default:
-                break;
+
+            }
 
 
         }
-
-
     }
+
 }

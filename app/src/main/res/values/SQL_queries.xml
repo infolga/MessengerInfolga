@@ -10,8 +10,17 @@
     <string name="SQLgetUpdatecontact"  >update   contacts set    first_name= \'%2$s\',last_name=\'%3$s\',phone=\'%4$s\' where contacts_id = %1$s ;</string>
     <string name="SQLgetgetuserslike"  >SELECT *  FROM users WHERE user_name LIKE \'%1$s\';</string>
     <string name="SQLgetgetuserslikeCount"  >SELECT count(*)  FROM users WHERE user_name LIKE \'%1$s\';</string>
-    <string name="SQLgetgetCountUserWhereId"  >SELECT count(*)  FROM users WHERE users_id = %1$s;</string>
+    <string name="SQLgetgetCountUserWhereId"  >SELECT *  FROM users WHERE users_id = %1$s;</string>
     <string name="SQLgetUpdateUs"  >update   users set user_name =\'%2$s\',phone=\'%3$s\',email=\'%4$s\',first_name=\'%5$s\',last_name=\'%6$s\',is_active=%7$s,last_online_at=\'%8$s\' WHERE  users_id = %1$s ;</string>
+    <string name="SQLgetAddConversation"  >INSERT INTO conversation (conversation_id, title, name_conversation, photo_id, type, creator_id, created_at,time_lasting ) VALUES (%1$s,\'%2$s\',\'%3$s\',%4$s,\'%5$s\',%6$s,\'%7$s\',\'%8$s\' );</string>
+    <string name="SQLgetgetConversation"  >SELECT *  FROM conversation WHERE conversation_id = %1$s;</string>
+    <string name="SQLgetUpdateConversation"  >update   conversation set title =\'%2$s\',name_conversation=\'%3$s\',photo_id=%4$s,type=\'%5$s\',creator_id=%6$s,created_at=\'%7$s\' ,time_lasting = \'%8$s\'  WHERE  conversation_id = %1$s ;</string>
+
+    <string name="SQLgetUpdateMessages"  >update   messages set conversation_id =%2$s,sender_id=%3$s,message_type=\'%4$s\',message=\'%5$s\',attachment_thumb_url=\'%6$s\',attachment_url=\'%7$s\' ,created_at =\'%8$s\' WHERE  messages_id = %1$s ;</string>
+    <string name="SQLgetAddMessages"  >INSERT INTO messages (messages_id, conversation_id, sender_id, message_type, message, attachment_thumb_url, attachment_url,created_at ) VALUES (%1$s,%2$s,%3$s,\'%4$s\',\'%5$s\',\'%6$s\',\'%7$s\',\'%8$s\');</string>
+    <string name="SQLgetgetMessages"  >SELECT *  FROM messages WHERE messages_id = %1$s;</string>
+
+    <string name="SQLgetgetConversationRV"  >SELECT con.conversation_id AS con_conversation_id, con.title AS con_title, con.photo_id AS con_photo_id, con.creator_id AS con_creator_id, con.created_at AS con_created_at, con.type AS con_type, con.name_conversation AS con_name_conversation, con.time_lasting AS con_time_lasting, mes.created_at AS mes_created_at, mes.message AS mes_message FROM conversation con LEFT JOIN messages mes ON mes.conversation_id = con.conversation_id WHERE (mes.messages_id = (SELECT mes2.messages_id FROM messages mes2 WHERE mes2.conversation_id = con.conversation_id ORDER BY mes2.created_at DESC, mes2.messages_id DESC LIMIT 1) ) OR mes.messages_id is null;  </string>
 
 
 

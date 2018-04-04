@@ -52,11 +52,9 @@ public class DD_SQL {
     private DD_SQL(Context context) {
         DB = new MyDB(context);
         listenerMessegeThread.start();
-
     }
 
     public static DD_SQL instanse(Context C) {
-
         if (dd_sql != null) {
             return dd_sql;
         } else {
@@ -71,7 +69,6 @@ public class DD_SQL {
     }
 
     private ArrayList<MtContact> readAllContact() {
-
         ArrayList<MtContact> list = new ArrayList<>();
         Cursor cursor = cont.getContentResolver().query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -103,7 +100,6 @@ public class DD_SQL {
             }
         }
         cursor.close();
-
         return list;
     }
 
@@ -116,18 +112,7 @@ public class DD_SQL {
         mHandlerDB.sendMessage(msg);
     }
 
-
-//    public String getMyUser(){
-//        Cursor cursor = DB.getReadableDatabase().rawQuery(cont.getString(R.string. ), null);
-//        cursor.moveToFirst();
-//        String s;
-//
-//
-//
-//    }
-
     public String getAccessToken() {
-
         Cursor cursor = DB.getReadableDatabase().rawQuery(cont.getString(R.string.SQLgetAccessToken), null);
         cursor.moveToFirst();
         String s;
@@ -136,7 +121,6 @@ public class DD_SQL {
             s = null;
         } else {
             s = cursor.getString(0);
-
         }
         cursor.close();
         return s;
@@ -171,21 +155,27 @@ public class DD_SQL {
         DB.getReadableDatabase().execSQL(sql_exe);
     }
 
-    private void SQL_insert_into_users(int users_id, String user_name, String phone, String email, String first_name, String last_name, int is_active, String last_online_at) {
+    private void SQL_insert_into_users(User user) {
+        int users_id = user.getUsers_id();
+        String user_name = user.getUser_name();
+        String phone = user.getPhone();
+        String email = user.getEmail();
+        String first_name = user.getFirst_name();
+        String last_name = user.getLast_name();
+        int is_active = user.getIs_active();
+        String last_online_at = user.getLast_online_at();
 
-        String sql =cont.getString(R.string.SQLgetgetCountUserWhereId);
+        String sql = cont.getString(R.string.SQLgetgetCountUserWhereId);
         String sql_exe = String.format(sql, Integer.toString(users_id));
 
         Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
         cursor.moveToFirst();
-        if (cursor.getInt(0)==0){
-
+        if (cursor.getCount() == 0) {
             sql = cont.getString(R.string.SQLgetAddUs);
             sql_exe = String.format(sql, Integer.toString(users_id), user_name, phone, email, first_name, last_name, Integer.toString(is_active), last_online_at);
             DB.getReadableDatabase().execSQL(sql_exe);
 
-        }else  {
-
+        } else {
             sql = cont.getString(R.string.SQLgetUpdateUs);
             sql_exe = String.format(sql, Integer.toString(users_id), user_name, phone, email, first_name, last_name, Integer.toString(is_active), last_online_at);
             DB.getReadableDatabase().execSQL(sql_exe);
@@ -196,10 +186,8 @@ public class DD_SQL {
 
     protected User SQL_select_all_into_users_where_like(String user_name_like, int numRow) {
         String sql = cont.getString(R.string.SQLgetgetuserslike);
-
         String sql_exe = String.format(sql, "%" + user_name_like + "%");
         // Log.e(TAG, sql_exe);
-
         Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
         cursor.moveToFirst();
         if (cursor.getCount() > numRow) {
@@ -223,17 +211,132 @@ public class DD_SQL {
     }
 
 
+    protected ArrayList<Conversation> SQL_select_all_conversation_for_rv() {
+
+
+        String sql = cont.getString(R.string.SQLgetgetConversationRV);
+
+
+          Log.e(TAG, sql);
+        ArrayList<Conversation>  conversationArrayList = new ArrayList<>();
+
+        Cursor cursor = DB.getReadableDatabase().rawQuery(sql, null);
+
+        while (cursor.moveToNext()) {
+            Conversation conversation = new Conversation();
+
+            conversation.setConversation_id(cursor.getInt(cursor.getColumnIndex("con_conversation_id")));
+            conversation.setTitle(cursor.getString(cursor.getColumnIndex("con_title")));
+            conversation.setPhoto_id(cursor.getInt(cursor.getColumnIndex("con_photo_id")));
+            conversation.setCreator_id(cursor.getInt(cursor.getColumnIndex("con_creator_id")));
+            conversation.setCreated_at(cursor.getString(cursor.getColumnIndex("con_created_at")));
+            conversation.setType(cursor.getString(cursor.getColumnIndex("con_type")));
+            conversation.setName_conversation(cursor.getString(cursor.getColumnIndex("con_name_conversation")));
+            conversation.setTime_last_viev(cursor.getString(cursor.getColumnIndex("con_time_lasting")));
+
+            conversation.setTime_last_Mes(cursor.getString(cursor.getColumnIndex("mes_created_at")));
+            conversation.setText_last_Mes(cursor.getString(cursor.getColumnIndex("mes_message")));
+            conversationArrayList.add(conversation);
+
+        }
+        cursor.close();
+        return conversationArrayList;
+
+    }
+
+
+    protected ArrayList<User> SQL_select_all_into_users_where_like(String user_name_like) {
+        String sql = cont.getString(R.string.SQLgetgetuserslike);
+        String sql_exe = String.format(sql, "%" + user_name_like + "%");
+        // Log.e(TAG, sql_exe);
+        ArrayList<User> users = new ArrayList<>();
+
+        Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
+        while (cursor.moveToNext()) {
+            User user = new User();
+            user.setUsers_id(cursor.getInt(cursor.getColumnIndex("users_id")));
+            user.setUser_name(cursor.getString(cursor.getColumnIndex("user_name")));
+            user.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
+            user.setEmail(cursor.getString(cursor.getColumnIndex("email")));
+            user.setFirst_name(cursor.getString(cursor.getColumnIndex("first_name")));
+            user.setLast_name(cursor.getString(cursor.getColumnIndex("last_name")));
+            user.setIs_active(cursor.getInt(cursor.getColumnIndex("is_active")));
+            user.setLast_online_at(cursor.getString(cursor.getColumnIndex("last_online_at")));
+            users.add(user);
+        }
+        cursor.close();
+        return users;
+
+    }
+
+
     protected int SQL_select_count_into_users_where_like(String user_name_like) {
         String sql = cont.getString(R.string.SQLgetgetuserslikeCount);
 
         String sql_exe = String.format(sql, "%" + user_name_like + "%");
         //Log.e(TAG, sql_exe);
-
         Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
         cursor.moveToFirst();
         int count = cursor.getInt(0);
         cursor.close();
-        return count ;
+        return count;
+    }
+
+    private void SQL_insert_conversation(Conversation conversation) {
+        int conversation_id = conversation.getConversation_id();
+        String title = conversation.getTitle();
+        String name_conversation = conversation.getName_conversation();
+        int photo_id = conversation.getPhoto_id();
+        String type = conversation.getType();
+        int creator_id = conversation.getCreator_id();
+        String created_at = conversation.getCreated_at();
+        String time_last_viev = conversation.getTime_last_viev();
+
+        String sql = cont.getString(R.string.SQLgetgetConversation);
+        String sql_exe = String.format(sql, Integer.toString(conversation_id));
+
+        Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
+
+        if (cursor.getCount() == 0) {
+            sql = cont.getString(R.string.SQLgetAddConversation);
+            sql_exe = String.format(sql, Integer.toString(conversation_id), title, name_conversation, Integer.toString(photo_id), type, Integer.toString(creator_id), created_at,time_last_viev);
+            Log.e(TAG, sql_exe);
+            DB.getReadableDatabase().execSQL(sql_exe);
+        } else {
+            sql = cont.getString(R.string.SQLgetUpdateConversation);
+            sql_exe = String.format(sql, Integer.toString(conversation_id), title, name_conversation, Integer.toString(photo_id), type, Integer.toString(creator_id), created_at,time_last_viev);
+            //Log.e(TAG, sql_exe);
+            DB.getReadableDatabase().execSQL(sql_exe);
+        }
+        cursor.close();
+    }
+
+    private void SQL_insert_messages(Messages messages) {
+        int id = messages.getId();
+        int conversation_id = messages.getConversation_id();
+        int sender_id = messages.getSender_id();
+        String message_type = messages.getMessage_type();
+        String message = messages.getMessage();
+        String attachment_thumb_url = messages.getAttachment_thumb_url();
+        String attachment_url = messages.getAttachment_url();
+        String created_at = messages.getCreated_at();
+
+        String sql = cont.getString(R.string.SQLgetgetMessages);
+        String sql_exe = String.format(sql, Integer.toString(id));
+
+        Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
+        if (cursor.getCount() == 0) {
+            sql = cont.getString(R.string.SQLgetAddMessages);
+            sql_exe = String.format(sql, Integer.toString(id), Integer.toString(conversation_id), Integer.toString(sender_id), message_type, message, attachment_thumb_url, attachment_url, created_at);
+             Log.e(TAG, sql_exe);
+            DB.getReadableDatabase().execSQL(sql_exe);
+        } else {
+            sql = cont.getString(R.string.SQLgetUpdateMessages);
+            sql_exe = String.format(sql, Integer.toString(id), Integer.toString(conversation_id), Integer.toString(sender_id), message_type, message, attachment_thumb_url, attachment_url, created_at);
+            Log.e(TAG, sql_exe);
+            DB.getReadableDatabase().execSQL(sql_exe);
+        }
+        cursor.close();
     }
 
 
@@ -241,23 +344,17 @@ public class DD_SQL {
 
         String sql = cont.getString(R.string.SQLgetgetcontact);
         String sql_exe = String.format(sql, Integer.toString(contacts_id));
-
         Cursor cursor = DB.getReadableDatabase().rawQuery(sql_exe, null);
-
         if (cursor.getCount() == 0) {
             sql = cont.getString(R.string.SQLgetAddcontact);
-
             sql_exe = String.format(sql, Integer.toString(contacts_id), phone, first_name, last_name);
-
             // Log.e(TAG, sql_exe);
             DB.getReadableDatabase().execSQL(sql_exe);
         } else {
             sql = cont.getString(R.string.SQLgetUpdatecontact);
             sql_exe = String.format(sql, Integer.toString(contacts_id), phone, first_name, last_name);
-
             //Log.e(TAG, sql_exe);
             DB.getReadableDatabase().execSQL(sql_exe);
-
         }
         cursor.close();
     }
@@ -287,8 +384,6 @@ public class DD_SQL {
 
                 mHandlerActiveViwe.sendMessage(message);
                 break;
-
-
         }
     }
 
@@ -299,20 +394,15 @@ public class DD_SQL {
             case MSG.XML_RESULT_VALUES_OK:
                 message = new Message();
                 message.what = MSG.USER_LOGIN_SUCCESSFUL;
+                clearAccess();
+                Element element = myXML.getCildElement(MSG.XML_ELEMENT_USER);
 
-                String user_id = myXML.getValueInActionsXML(MSG.XML_ELEMENT_USERS_ID);
-                String user_name = myXML.getValueInActionsXML(MSG.XML_ELEMENT_USER_NAME);
-                String phone = myXML.getValueInActionsXML(MSG.XML_ELEMENT_PHONE);
-                String email = myXML.getValueInActionsXML(MSG.XML_ELEMENT_EMAIL);
-                String first_name = myXML.getValueInActionsXML(MSG.XML_ELEMENT_FIRST_NAME);
-                String last_name = myXML.getValueInActionsXML(MSG.XML_ELEMENT_LAST_NAME);
-                String is_active = myXML.getValueInActionsXML(MSG.XML_ELEMENT_IS_ACTIVE);
-                String last_online_at = myXML.getValueInActionsXML(MSG.XML_ELEMENT_LAST_ONLINE);
+                User user = new User(element);
+
                 String token = myXML.getValueInActionsXML(MSG.XML_ELEMENT_TOKEN);
 
-
-                SQL_insert_into_users(Integer.parseInt(user_id), user_name, phone, email, first_name, last_name, Integer.parseInt(is_active), last_online_at);
-                SQL_insert_into_accses_token(Integer.parseInt(user_id), token);
+                SQL_insert_into_users(user);
+                SQL_insert_into_accses_token(user.getUsers_id(), token);
 
                 mHandlerActiveViwe.sendMessage(message);
                 break;
@@ -332,37 +422,25 @@ public class DD_SQL {
     }
 
     private void addContact(MyXML myXML) {
-
         int result = myXML.getAttributeResult();
 
         switch (result) {
             case MSG.XML_RESULT_VALUES_OK:
-
-
                 String contacts_id = myXML.getValueInActionsXML(MSG.XML_ELEMENT_CONTACT_ID);
-
                 String phone = myXML.getValueInActionsXML(MSG.XML_ELEMENT_PHONE);
-
                 String first_name = myXML.getValueInActionsXML(MSG.XML_ELEMENT_FIRST_NAME);
                 String last_name = myXML.getValueInActionsXML(MSG.XML_ELEMENT_LAST_NAME);
 
-
-                String token = myXML.getValueInActionsXML(MSG.XML_ELEMENT_TOKEN);
                 SQL_insert_into_contacts(Integer.parseInt(contacts_id), first_name, last_name, phone);
-
                 break;
 
             default:
                 break;
         }
-
-
     }
 
     private void addUsers(MyXML myXML) {
-
         int result = myXML.getAttributeResult();
-
         switch (result) {
             case MSG.XML_RESULT_VALUES_OK:
 
@@ -371,29 +449,111 @@ public class DD_SQL {
 
                 for (int i = 0; i < cildrenListElement.size(); i++) {
                     User user = new User(cildrenListElement.get(i));
-
-                    SQL_insert_into_users(user.getUsers_id(),
-                            user.getUser_name(),
-                            user.getPhone(),
-                            user.getEmail(),
-                            user.getFirst_name(),
-                            user.getLast_name(),
-                            user.getIs_active(),
-                            user.getLast_online_at());
+                    SQL_insert_into_users(user);
                 }
                 Message message = new Message();
                 message.what = MSG.UPDATE_RECYCLER_VIEV;
                 mHandlerActiveViwe.sendMessage(message);
-
-
                 break;
+            default:
+                break;
+        }
+    }
 
+    private void addConversation(MyXML myXML) {
+        int result = myXML.getAttributeResult();
+
+        switch (result) {
+            case MSG.XML_RESULT_VALUES_OK:
+
+                List<Element> cildrenListElement = myXML.getCildrenListElement(MSG.XML_ELEMENT_CONVERSATION);
+                //Log.e(TAG, cildrenListElement.get(0).getName());
+
+                for (int i = 0; i < cildrenListElement.size(); i++) {
+                    Conversation conversation = new Conversation(cildrenListElement.get(i));
+
+                    SQL_insert_conversation(conversation);
+                }
+                Message message = new Message();
+                message.what = MSG.UPDATE_RECYCLER_VIEV;
+                mHandlerActiveViwe.sendMessage(message);
+                break;
             default:
                 break;
         }
 
 
     }
+
+    private void analisXML(MyXML XML) {
+
+        if (MSG.XML_TYPE_REQUEST.equals(XML.getTypeXML())) {
+
+        } else {
+
+            switch (XML.getIdActionsXML()) {
+                case MSG.XML_USER_LOGIN:
+                    userLoginResponse(XML);
+                    break;
+                case MSG.XML_USER_REGISTRATION:
+                    userRegistrationResponse(XML);
+
+                    break;
+                case MSG.XML_CONTACT_ADD:
+                    addContact(XML);
+
+                    break;
+                case MSG.XML_GET_USERS_FROM_LIKE:
+                    addUsers(XML);
+                    break;
+                case MSG.XML_CONVERSATION_ADD:
+                    addConversation(XML);
+                    break;
+
+                case MSG.XML_GET_ALL_CONVERSATION:
+                    addConversationALL(XML);
+
+                    break;
+
+
+            }
+        }
+    }
+
+    private void addConversationALL(MyXML myXML) {
+
+        int result = myXML.getAttributeResult();
+
+        switch (result) {
+            case MSG.XML_RESULT_VALUES_OK:
+
+                List<Element> cildrenListElementC = myXML.getCildrenListElement(MSG.XML_ELEMENT_CONVERSATION);
+                List<Element> cildrenListElementM = myXML.getCildrenListElement(MSG.XML_ELEMENT_MESSAGES);
+
+                //Log.e(TAG, cildrenListElement.get(0).getName());
+
+                for (int i = 0; i < cildrenListElementC.size(); i++) {
+                    Conversation conversation = new Conversation(cildrenListElementC.get(i));
+
+                    SQL_insert_conversation(conversation);
+                }
+                for (int i = 0; i < cildrenListElementM.size(); i++) {
+                    Messages messages = new Messages(cildrenListElementM.get(i));
+
+                    SQL_insert_messages(messages);
+                }
+
+                Message message = new Message();
+                message.what = MSG.UPDATE_RECYCLER_VIEV;
+                mHandlerActiveViwe.sendMessage(message);
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
 
     private class MyHandlerDB extends Handler {
         @SuppressLint("HardwareIds")
@@ -406,6 +566,16 @@ public class DD_SQL {
             Log.e(TAG, "#: " + msg.what);
             boolean b;
             switch (msg.what) {
+                case MSG.PACKAGE_ARRIVES:
+                    try {
+                        X = new MyXML((String) msg.obj);
+                        //Log.e(TAG, X.toString());
+                        analisXML(X);
+
+                    } catch (JDOMException | IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case MSG.USER_LOGIN:
                     bundle = (Bundle) msg.obj;
                     X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_USER_LOGIN);
@@ -422,19 +592,6 @@ public class DD_SQL {
                     clearAccess();
                     ServerConnect.instanse(null).HsendMessage(message);
                     // Log.e(TAG, X.toString());
-                    break;
-
-                case MSG.PACKAGE_ARRIVES:
-                    try {
-                        X = new MyXML((String) msg.obj);
-                        //Log.e(TAG, X.toString());
-                        analisXML(X);
-
-                    } catch (JDOMException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     break;
                 case MSG.USER_REGISTRATION:
                     bundle = (Bundle) msg.obj;
@@ -510,42 +667,37 @@ public class DD_SQL {
                     ServerConnect.instanse(cont).HsendMessage(message);
                     break;
 
+                case MSG.XML_CONVERSATION_SINGLE_CREATE:
+                    X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_CONVERSATION_ADD);
+                    X.addChild(MSG.XML_ELEMENT_TOKEN, getAccessToken());
+
+
+                    Element element = new Element(MSG.XML_ELEMENT_USER);
+                    element = MyXML.addChild(element, MSG.XML_ELEMENT_USERS_ID, Integer.toString(msg.arg1));
+
+                    X.addChild(MSG.XML_ELEMENT_TYPE, MSG.XML_ELEMENT_TYPE_SINGLE);
+                    X.addChildElement(element);
+                    message = new Message();
+                    message.what = MSG.SEND_PACKEGE;
+                    message.obj = X.toString();
+                    ServerConnect.instanse(cont).HsendMessage(message);
+
+                    break;
+                case MSG.GET_ALL_CONVERSATION:
+                    X = new MyXML(MSG.XML_TYPE_REQUEST, MSG.XML_GET_ALL_CONVERSATION);
+                    X.addChild(MSG.XML_ELEMENT_TOKEN, getAccessToken());
+
+                    message = new Message();
+                    message.what = MSG.SEND_PACKEGE;
+                    message.obj = X.toString();
+                    ServerConnect.instanse(cont).HsendMessage(message);
+                    break;
+
 
                 default:
                     break;
             }
-
         }
-
-        private void analisXML(MyXML XML) {
-
-            if (MSG.XML_TYPE_REQUEST.equals(XML.getTypeXML())) {
-
-            } else {
-
-                switch (XML.getIdActionsXML()) {
-                    case MSG.XML_USER_LOGIN:
-                        userLoginResponse(XML);
-                        break;
-                    case MSG.XML_USER_REGISTRATION:
-                        userRegistrationResponse(XML);
-
-                        break;
-                    case MSG.XML_CONTACT_ADD:
-                        addContact(XML);
-
-                        break;
-                    case MSG.XML_GET_USERS_FROM_LIKE:
-                        addUsers(XML);
-
-                        break;
-
-
-                }
-            }
-        }
-
-
     }
 
     private class MyDB extends SQLiteOpenHelper {

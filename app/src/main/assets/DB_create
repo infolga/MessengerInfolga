@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS  conversation  (
    creator_id  INTEGER NOT NULL,
    created_at  TEXT NULL,
    type  TEXT  NOT NULL,
-   name_conversation  INTEGER NULL);
+   name_conversation  INTEGER NULL,
+   time_lasting  TEXT NULL);
 
 DROP TABLE IF EXISTS  messages ;
 
@@ -50,7 +51,8 @@ CREATE TABLE IF NOT EXISTS  participants  (
 
    id_participants  INTEGER NOT NULL PRIMARY KEY,
    conversation_id  INTEGER NOT NULL,
-   users_id  INTEGER NOT NULL   );
+   users_id  INTEGER NOT NULL ,
+   last_view TEXT NOT NULL );
 
 
 

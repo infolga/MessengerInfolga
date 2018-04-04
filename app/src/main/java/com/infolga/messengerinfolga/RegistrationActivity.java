@@ -48,6 +48,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     shABoolean = true;
                     showProgress(true);
 
+
+
                     Bundle bundle = new Bundle();
                     bundle.putCharSequence(MSG.XML_ELEMENT_PHONE, mPhoneView.getUnmaskedText());
                     bundle.putCharSequence(MSG.XML_ELEMENT_PASSWORD, mPasswordView.getText().toString());

@@ -1,8 +1,5 @@
 package com.infolga.messengerinfolga;
 
-/**
- * Created by infol on 25.03.2018.
- */
 
 public abstract class MSG {
 
@@ -43,7 +40,10 @@ public abstract class MSG {
 
     public static final int UPDATE_RECYCLER_VIEV= 23;
 
-
+    public static final int XML_CONVERSATION_ADD = 24;//id actions
+    public static final int XML_CONVERSATION_SINGLE_CREATE= 25;
+    public static final int GET_ALL_CONVERSATION = 26;
+    public static final int XML_GET_ALL_CONVERSATION = 27;//id actions
 
     public static final int XML_RESULT_VALUES_OK = 0;
     public static final int XML_RESULT_VALUES_INCORRECT_PASSWORD = 100;
@@ -70,6 +70,26 @@ public abstract class MSG {
     public static final String XML_ELEMENT_AFTER ="after_numb";
     public static final String XML_ELEMENT_BEFORE ="before_numb";
     public static final String XML_ELEMENT_USER ="user";
+    public static final String XML_ELEMENT_TITLE ="title";
+    public static final String XML_ELEMENT_NAME_CONVERSATION ="name_conversation";
+    public static final String XML_ELEMENT_PHOTO_ID ="photo_id";
+    public static final String XML_ELEMENT_TYPE ="type";
+    public static final String XML_ELEMENT_TYPE_SINGLE ="single";
+    public static final String XML_ELEMENT_TYPE_GROUP ="group";
+    public static final String XML_ELEMENT_CONVERSATION_ID = "conversation_id";
+    public static final String XML_ELEMENT_CONVERSATION_CREATOR_ID = "creator_id";
+    public static final String XML_ELEMENT_CREATED_AT = "created_at";
+    public static final String XML_ELEMENT_CONVERSATION_TIME_LAST_VIEV = "time_last_viev";
+    public static final String XML_ELEMENT_CONVERSATION  = "conversation";
+
+    public static final String XML_ELEMENT_MESSAGES  = "messages";
+    public static final String XML_ELEMENT_MESSAGE_ID  = "message_id";
+    public static final String XML_ELEMENT_SENDER_ID  = "sender_id";
+    public static final String XML_ELEMENT_MESSAGE_TYPE  = "message_type";
+    public static final String XML_ELEMENT_MESSAGE  = "message";
+    public static final String XML_ELEMENT_ATTACHMENT_THUMB_URL  = "attachment_thumb_url";
+    public static final String XML_ELEMENT_ATTACHMENT_URL  = "attachment_url";
+
 
 
     public static final String XML_ELEMENT_ACTIONS = "actions";
