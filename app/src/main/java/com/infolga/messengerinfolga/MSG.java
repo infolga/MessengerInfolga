@@ -90,7 +90,8 @@ public abstract class MSG {
     public static final String XML_ELEMENT_ATTACHMENT_THUMB_URL  = "attachment_thumb_url";
     public static final String XML_ELEMENT_ATTACHMENT_URL  = "attachment_url";
 
-
+    public static final String XML_ELEMENT_PARTICIPANTS  = "participants";
+    public static final String XML_ELEMENT_PARTICIPANTS_ID  = "participants_id";
 
     public static final String XML_ELEMENT_ACTIONS = "actions";
     public static final String XML_ELEMENT_DRVISE_INFO = "device_info";

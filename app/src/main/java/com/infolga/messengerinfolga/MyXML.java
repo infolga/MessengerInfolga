@@ -29,6 +29,16 @@ public class MyXML {
         buf = root;
     }
 
+
+    public MyXML(byte[] bytes) throws JDOMException, IOException {
+
+        InputStream is = new ByteArrayInputStream(bytes);
+        SAXBuilder saxBuilder = new SAXBuilder();
+        doc = saxBuilder.build(is);
+        root = doc.getRootElement();
+        buf = root;
+    }
+
     public MyXML(String nameRoot, int Actionid) {
 
         this.root = new Element(nameRoot);

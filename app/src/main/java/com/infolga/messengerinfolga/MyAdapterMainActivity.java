@@ -71,11 +71,19 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         Conversation conversation = ConversationsArr.get(position);
 
         holder.name_conversation.setText(conversation.getName_conversation());
+
+
+
+
+
+
+
+
         holder.last_msg.setText(conversation.getText_last_Mes());
+
 
         if (conversation.getCreated_at() != null) {
             @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 
             Date now = Calendar.getInstance().getTime();
             Date dateMS = null;
@@ -87,8 +95,8 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Log.e(TAG,"ddd "+ conversation.getCreated_at());
-            Log.e(TAG, df.format(dateMS));
+           // Log.e(TAG,"ddd "+ conversation.getCreated_at());
+           // Log.e(TAG, df.format(dateMS));
             Calendar cal = Calendar.getInstance();
 
             cal.setTime(now);

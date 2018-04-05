@@ -69,12 +69,12 @@ public class ServerConnect {
                         offset += countav;
                         if (offset == countByte) {
                             byte[] by = Base64.decode(byteBuffer.array(), Base64.DEFAULT);
-                            String text = new String(by, "UTF-8");
 
+                            String text = new String(by, "UTF-8");
                             Log.e(TAG, "text " + text);
                             Message message   =  new Message();
                             message.what= MSG.PACKAGE_ARRIVES;
-                            message.obj = text;
+                            message.obj = by;
                             DD_SQL.instanse(null).HsendMessage(message);
                             countByte = -1;
                             offset = 0;

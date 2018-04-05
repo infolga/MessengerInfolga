@@ -24,14 +24,15 @@ public class MainActivity2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnItemClickListener {
 
     private final String TAG = "MainActivity2";
-
+    TextView nav_user_name;
+    TextView nav_user_phone;
     private Button button;
     private TextView textView;
 
     private EditText editText;
     private Handler mHandlerActiveViwe;
 
-    private MyAdapterMainActivity  myAdapterMainActivity;
+    private MyAdapterMainActivity myAdapterMainActivity;
     private RecyclerView recyclerView;
 
     @Override
@@ -51,7 +52,9 @@ public class MainActivity2 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        View hView = navigationView.getHeaderView(0);
+        nav_user_name = (TextView) hView.findViewById(R.id.FLmyusers);
+        nav_user_phone = (TextView) hView.findViewById(R.id.myusers_phone);
 
 
         mHandlerActiveViwe = new MyHandlerActiveViwe();
@@ -83,7 +86,11 @@ public class MainActivity2 extends AppCompatActivity
         myAdapterMainActivity.setInvalide();
         myAdapterMainActivity.MSG_updete();
         myAdapterMainActivity.notifyDataSetChanged();
-
+        User user = DD_SQL.instanse(this).SQL_select_Myusers_where();
+        if (user != null) {
+            nav_user_name.setText(user.getFirst_name() + " " + user.getLast_name());
+            nav_user_phone.setText(user.getPhone());
+        }
     }
 
     @Override
@@ -147,6 +154,8 @@ public class MainActivity2 extends AppCompatActivity
         } else if (id == R.id.nav_contacts) {
 
         } else if (id == R.id.nav_Seting) {
+            DD_SQL.instanse(this).clearAccess();
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -173,8 +182,6 @@ public class MainActivity2 extends AppCompatActivity
                     myAdapterMainActivity.MSG_updete();
                     myAdapterMainActivity.notifyDataSetChanged();
                     break;
-
-
 
 
                 default:

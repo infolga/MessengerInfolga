@@ -43,8 +43,8 @@
                     android:hint="@string/prompt_phone"
                     android:inputType="number"
                     app:deleteChar="_"
-                    app:format="38022222222[1]"
-                    app:mask="+38022222222*"
+                    app:format="3803333333[1][2]"
+                    app:mask=  "+380333333**"
                     app:notMaskedSymbol="*"
                     app:replacementChar="_" />
 
@@ -65,7 +65,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="3132123123123" />
+                    android:text="0987654321" />
 
             </android.support.design.widget.TextInputLayout>
 

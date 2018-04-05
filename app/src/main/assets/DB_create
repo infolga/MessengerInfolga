@@ -51,8 +51,7 @@ CREATE TABLE IF NOT EXISTS  participants  (
 
    id_participants  INTEGER NOT NULL PRIMARY KEY,
    conversation_id  INTEGER NOT NULL,
-   users_id  INTEGER NOT NULL ,
-   last_view TEXT NOT NULL );
+   users_id  INTEGER NOT NULL);
 
 
 
