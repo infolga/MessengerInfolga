@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -52,7 +53,7 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
             message.what = MSG.GET_ALL_CONVERSATION;
             DD_SQL.instanse(null).HsendMessage(message);
             invalide = false;
-            // Log.e(TAG, "getItemCount DD_SQL.instanse(null).HsendMessage(message)");
+              Log.e(TAG, " message.what = MSG.GET_ALL_CONVERSATION;");
         }
         if (MSG_updete) {
 
@@ -69,34 +70,27 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         Conversation conversation = ConversationsArr.get(position);
-
+        holder.conversation = conversation;
         holder.name_conversation.setText(conversation.getName_conversation());
-
-
-
-
-
-
-
-
         holder.last_msg.setText(conversation.getText_last_Mes());
 
+          DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date now = Calendar.getInstance().getTime();
+        Date dateMS = null;
+        try {
+            if (conversation.getTime_last_Mes() != null) {
 
-        if (conversation.getCreated_at() != null) {
-            @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                dateMS = df.parse(conversation.getTime_last_Mes());
+            } else if (conversation.getCreated_at() != null) {
 
-            Date now = Calendar.getInstance().getTime();
-            Date dateMS = null;
-            try {
-
-                //dateMS = df.parse(conversation.getTime_last_Mes());
                 dateMS = df.parse(conversation.getCreated_at());
 
-            } catch (ParseException e) {
-                e.printStackTrace();
             }
-           // Log.e(TAG,"ddd "+ conversation.getCreated_at());
-           // Log.e(TAG, df.format(dateMS));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (dateMS != null) {
+
             Calendar cal = Calendar.getInstance();
 
             cal.setTime(now);
@@ -107,14 +101,18 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
             cal.add(Calendar.DAY_OF_YEAR, -7);
             Date nowweek = cal.getTime();
 
+            //
+            holder.last_msg_time.setText( dateMS.toString());
+
+
             if (nowhous.before(dateMS)) {
-                @SuppressLint("SimpleDateFormat") DateFormat day = new SimpleDateFormat("HH:mm");
+                 DateFormat day = new SimpleDateFormat("HH:mm", Locale.getDefault());
                 holder.last_msg_time.setText(day.format(dateMS));
             } else if (nowweek.before(dateMS)) {
-                @SuppressLint("SimpleDateFormat") DateFormat week = new SimpleDateFormat("E");
+                 DateFormat week = new SimpleDateFormat("E", Locale.getDefault());
                 holder.last_msg_time.setText(week.format(dateMS));
             } else {
-                @SuppressLint("SimpleDateFormat") DateFormat mons = new SimpleDateFormat("d MMM");
+               DateFormat mons = new SimpleDateFormat("d MMM", Locale.getDefault());
                 holder.last_msg_time.setText(mons.format(dateMS));
             }
 

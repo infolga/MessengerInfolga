@@ -2,7 +2,13 @@ package com.infolga.messengerinfolga;
 
 import org.jdom2.Element;
 
-public class Conversation   implements Myin{
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+public class Conversation implements Myin {
 
     private int conversation_id;
     private String title;
@@ -13,9 +19,47 @@ public class Conversation   implements Myin{
     private String name_conversation;
     private String time_last_viev;
 
-    private int  countUnreadMes;
+    private int countUnreadMes;
     private String time_last_Mes;
     private String text_last_Mes;
+
+    public Conversation() {
+    }
+
+    public Conversation(Element el) {
+        conversation_id = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_CONVERSATION_ID).getText());
+
+        title = el.getChild(MSG.XML_ELEMENT_TITLE).getText();
+        photo_id = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_PHOTO_ID).getText());
+        creator_id = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_CONVERSATION_CREATOR_ID).getText());
+
+        type = el.getChild(MSG.XML_ELEMENT_TYPE).getText();
+        name_conversation = el.getChild(MSG.XML_ELEMENT_NAME_CONVERSATION).getText();
+
+
+        SimpleDateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date d = null;
+        Date d2 = null;
+        try {
+            d2 = dfm.parse(el.getChild(MSG.XML_ELEMENT_CONVERSATION_TIME_LAST_VIEV).getText());
+            d = dfm.parse(el.getChild(MSG.XML_ELEMENT_CREATED_AT).getText());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar time = Calendar.getInstance();
+        time.setTime(d);
+        time.add(Calendar.MILLISECOND, time.getTimeZone().getOffset(time.getTimeInMillis()));
+        created_at = dfm.format(time.getTime());
+
+
+        time = Calendar.getInstance();
+        time.setTime(d2);
+        time.add(Calendar.MILLISECOND, time.getTimeZone().getOffset(time.getTimeInMillis()));
+
+        time_last_viev = dfm.format(time.getTime());
+
+
+    }
 
     public int getCountUnreadMes() {
         return countUnreadMes;
@@ -39,22 +83,6 @@ public class Conversation   implements Myin{
 
     public void setText_last_Mes(String text_last_Mes) {
         this.text_last_Mes = text_last_Mes;
-    }
-
-    public Conversation() {}
-
-    public Conversation(Element el) {
-        conversation_id = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_CONVERSATION_ID).getText());
-
-        title = el.getChild(MSG.XML_ELEMENT_TITLE).getText();
-        photo_id = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_PHOTO_ID).getText());
-        creator_id = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_CONVERSATION_CREATOR_ID).getText());
-        created_at = el.getChild(MSG.XML_ELEMENT_CREATED_AT).getText();
-        type = el.getChild(MSG.XML_ELEMENT_TYPE).getText();
-        name_conversation = el.getChild(MSG.XML_ELEMENT_NAME_CONVERSATION).getText();
-        time_last_viev = el.getChild(MSG.XML_ELEMENT_CONVERSATION_TIME_LAST_VIEV).getText();
-
-
     }
 
     public Element getXMLElement() {

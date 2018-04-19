@@ -39,6 +39,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ConversationActivity"
+            android:label="@string/title_activity_ConversationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
@@ -64,14 +73,11 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" />
-
-        <activity android:name=".Find_user"
+        <activity
+            android:name=".Find_user"
             android:label="@string/title_activity_find_user"
-            android:theme="@style/AppTheme"
-            >
+            android:theme="@style/AppTheme" />
 
-
-        </activity>
     </application>
 
 </manifest>

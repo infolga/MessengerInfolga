@@ -2,6 +2,12 @@ package com.infolga.messengerinfolga;
 
 import org.jdom2.Element;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class Messages implements Myin {
 
 
@@ -14,6 +20,7 @@ public class Messages implements Myin {
     private String attachment_url;
     private String created_at;
 
+    private String us_FL_name;
 
     public Messages() {
     }
@@ -29,6 +36,25 @@ public class Messages implements Myin {
         attachment_url = el.getChild(MSG.XML_ELEMENT_ATTACHMENT_URL).getText();
         created_at = el.getChild(MSG.XML_ELEMENT_CREATED_AT).getText();
 
+        SimpleDateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date d = null;
+        try {
+            d = dfm.parse(el.getChild(MSG.XML_ELEMENT_CREATED_AT).getText());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar time = Calendar.getInstance();
+        time.setTime(d);
+        time.add(Calendar.MILLISECOND, time.getTimeZone().getOffset(time.getTimeInMillis()));
+        created_at = dfm.format(time.getTime());
+    }
+
+    public String getUs_FL_name() {
+        return us_FL_name;
+    }
+
+    public void setUs_FL_name(String us_FL_name) {
+        this.us_FL_name = us_FL_name;
     }
 
     @Override

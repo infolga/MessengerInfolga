@@ -1,17 +1,15 @@
 package com.infolga.messengerinfolga;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,12 +23,30 @@ public class Find_user extends AppCompatActivity implements View.OnClickListener
     private EditText userNameFind;
     private MyAdapterFindUser myAdapterFindUser;
     private RecyclerView recyclerView;
-
     private String user_name;
+    private int convenient_id;
+    private String actions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        Intent intent = getIntent();
+        actions = intent.getStringExtra("actions");
+        convenient_id = intent.getIntExtra("convenient_id", -1);
+        if (actions != null) {
+
+            if (actions.equals("newChat")) {
+
+                setTitle("Create new chat");
+            } else if (actions.equals("newGroup")) {
+                setTitle("Create a new group");
+            } else if (actions.equals("addUsers")) {
+                setTitle("Add user");
+            }
+        }
+
         setContentView(R.layout.activity_find_user);
 
         mHandlerActiveViwe = new Find_user.MyHandlerActiveViwe();
@@ -86,73 +102,113 @@ public class Find_user extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onItemClick(View view, Object user) {
 
-//        Message message = new Message();
-//        message.what = MSG.XML_CONVERSATION_SINGLE_CREATE;
-//        message.obj = user;
-//        DD_SQL.instanse(this).HsendMessage(message);
+        if (actions != null) {
 
-        Log.e(TAG, " onItemClick:  1 ");
-        showDialog(((User) user).getFirst_name() + " " + ((User) user).getLast_name(), ((User) user).getUsers_id());
-        Log.e(TAG, " onItemClick:   2");
+            if (actions.equals("newChat")) {
 
+                showDialogNewChat(((User) user).getFirst_name() + " " + ((User) user).getLast_name(), ((User) user).getUsers_id());
+            } else if (actions.equals("newGroup")) {
+                showDialogNewGroup(((User) user).getUsers_id());
+            } else if (actions.equals("addUsers")) {
+                showDialogAddUsers( convenient_id, ((User) user).getFirst_name() + " " + ((User) user).getLast_name(), ((User) user).getUsers_id());
+            }
+        }
+    }
+
+    private void showDialogAddUsers(final int convenient_id, String s, final int users_id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add a user " + s+"?");
+
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Message message = new Message();
+                message.what = MSG.CONVERSATION_ADD_USERS;
+                message.arg1 = users_id;
+                message.arg2 = convenient_id;
+                DD_SQL.instanse(null).HsendMessage(message);
+
+                Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showDialogNewGroup(final int userss_id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter the name of the new group chat");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (input.getText().length() > 0) {
+
+                    Message message = new Message();
+                    message.what = MSG.XML_CONVERSATION_GROUP_CREATE;
+                    message.arg1 = userss_id;
+                    message.obj = input.getText().toString();
+                    DD_SQL.instanse(null).HsendMessage(message);
+
+
+                    Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Short name group", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
 
-    void showDialog(String s, int user_id) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+    void showDialogNewChat(String s, final int user_id) {
 
-        String inputText = s;
 
-        DialogFragment newFragment = MyDialogFragment.newInstance(inputText, user_id);
-        newFragment.show(ft, "dialog");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Create a chat with " + s);
 
-    }
 
-    public static class MyDialogFragment extends DialogFragment {
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Message message = new Message();
+                message.what = MSG.XML_CONVERSATION_SINGLE_CREATE;
+                message.arg1 = user_id;
+                DD_SQL.instanse(null).HsendMessage(message);
 
-        String mText;
-        int user_id;
+                Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
 
-        static MyDialogFragment newInstance(String text, int user_id) {
-            MyDialogFragment f = new MyDialogFragment();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
 
-            Bundle args = new Bundle();
-            args.putString("text", text);
-            args.putInt("user_id", user_id);
-            f.setArguments(args);
+        builder.show();
 
-            return f;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            mText = "Create a chat with " + getArguments().getString("text");
-            user_id = getArguments().getInt("user_id");
-            return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.mipmap.ic_launcher)
-                    .setTitle("Create chat")
-                    .setMessage(mText)
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-
-                                    Message message = new Message();
-                                    message.what = MSG.XML_CONVERSATION_SINGLE_CREATE;
-                                    message.arg1 = user_id;
-                                    DD_SQL.instanse(null).HsendMessage(message);
-
-                                    Toast.makeText(getActivity(), "OK", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                    )
-                    .setNegativeButton("Cancel", null)
-                    .create();
-        }
 
     }
 
@@ -166,7 +222,13 @@ public class Find_user extends AppCompatActivity implements View.OnClickListener
             Log.e(TAG, "# сообщенее: " + msg.what);
             switch (msg.what) {
 
-                case MSG.UPDATE_RECYCLER_VIEV:
+//                case MSG.UPDATE_RECYCLER_VIEV:
+//                    // myAdapterFindUser.invalideRV();
+//                    myAdapterFindUser.MSG_updete();
+//                    myAdapterFindUser.notifyDataSetChanged();
+//                    break;
+
+                case MSG.UPDATE_RECYCLER_VIEV_ADD_USERS:
                     // myAdapterFindUser.invalideRV();
                     myAdapterFindUser.MSG_updete();
                     myAdapterFindUser.notifyDataSetChanged();

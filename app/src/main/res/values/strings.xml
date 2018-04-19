@@ -3,13 +3,14 @@
     <string name="microphone">Microphone</string>
     <string name="remove">Remove</string>
 
-    <string name="Olocaladdress">ec2-34-218-147-163.us-west-2.compute.amazonaws.com</string>
+    <string name="olocaladdress">ec2-34-218-147-163.us-west-2.compute.amazonaws.com</string>
     <string name="serverPort">8080</string>
     <string name="localaddress">192.168.0.120</string>
 
     <string name="search_hint">Поиск</string>
     <string name="title_activity_main2">MessengerInfolga</string>
     <string name="title_activity_find_user">Find User</string>
+    <string name="title_activity_ConversationActivity">Conversation</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -48,6 +49,9 @@
     <string name="action_user_name">*User name</string>
     <string name="action_email">Email</string>
     <string name="action_last_name">Last name</string>
+
+    <string name="menu_add_user">Add user</string>
+
 
 
     <string name="test"> </string>

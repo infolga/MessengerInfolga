@@ -129,6 +129,9 @@ public class ServerConnect {
                 serverConnect = new ServerConnect(C);
                 serverConnect.listenerMessegeThread.start();
                 serverConnect.listenerServerThread.start();
+
+                //Log.e(TAG, "listenerMessegeThread  "+ serverConnect.listenerMessegeThread.isAlive() );
+               // Log.e(TAG, "listenerServerThread  "+ serverConnect.listenerServerThread.isAlive() );
                 return serverConnect;
             } else {
                 return null;
@@ -137,6 +140,13 @@ public class ServerConnect {
     }
 
     public void HsendMessage(Message msg) {
+        while (serverConnect.mHandlerServerConnect ==null ){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         mHandlerServerConnect.sendMessage(msg);
     }
 
@@ -155,16 +165,18 @@ public class ServerConnect {
         socket = new Socket(address, Integer.parseInt(serverPort));
         sin = socket.getInputStream();
         sout = socket.getOutputStream();
+
         h.postDelayed(waitAndReedMsg, 1000);
+
     }
 
-    private void SendPackege(String str) throws IOException {
+    private void SendPackege(byte[] bd) throws IOException {
 
         if (!isConnect()) {
             Connect();
         }
         // Log.e(TAG, (String) msg.obj);
-        byte[] bd = str.getBytes("UTF-8");
+
 
         byte[] bd3 = Base64.encode(bd, Base64.DEFAULT);
 
@@ -193,7 +205,7 @@ public class ServerConnect {
             try {
                 switch (msg.what) {
                     case MSG.SEND_PACKEGE:
-                        SendPackege((String) msg.obj);
+                        SendPackege((byte[]) msg.obj);
                         break;
 
 
@@ -201,6 +213,7 @@ public class ServerConnect {
                         break;
                 }
             } catch (IOException e) {
+
                 e.printStackTrace();
             }
         }

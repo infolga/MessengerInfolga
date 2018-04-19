@@ -25,11 +25,9 @@ public class MainActivity2 extends AppCompatActivity
 
     private final String TAG = "MainActivity2";
     TextView nav_user_name;
+    TextView nav_user_username;
     TextView nav_user_phone;
-    private Button button;
-    private TextView textView;
 
-    private EditText editText;
     private Handler mHandlerActiveViwe;
 
     private MyAdapterMainActivity myAdapterMainActivity;
@@ -55,6 +53,8 @@ public class MainActivity2 extends AppCompatActivity
         View hView = navigationView.getHeaderView(0);
         nav_user_name = (TextView) hView.findViewById(R.id.FLmyusers);
         nav_user_phone = (TextView) hView.findViewById(R.id.myusers_phone);
+        nav_user_username= (TextView)  hView.findViewById(R.id.myusersname);
+
 
 
         mHandlerActiveViwe = new MyHandlerActiveViwe();
@@ -69,6 +69,8 @@ public class MainActivity2 extends AppCompatActivity
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
         recyclerView.setHasFixedSize(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.offsetChildrenHorizontal(5);
+        layoutManager.offsetChildrenVertical(10);
         recyclerView.setLayoutManager(layoutManager);
 
         myAdapterMainActivity = new MyAdapterMainActivity();
@@ -90,6 +92,7 @@ public class MainActivity2 extends AppCompatActivity
         if (user != null) {
             nav_user_name.setText(user.getFirst_name() + " " + user.getLast_name());
             nav_user_phone.setText(user.getPhone());
+            nav_user_username.setText(user.getUser_name());
         }
     }
 
@@ -144,19 +147,31 @@ public class MainActivity2 extends AppCompatActivity
 
         if (id == R.id.new_group) {
 
+            Intent intent = new Intent(this, Find_user.class);
+            intent.putExtra("actions", "newGroup");
+            startActivity(intent);
         } else if (id == R.id.new_channal) {
+
 
         } else if (id == R.id.new_chat) {
 
             Intent intent = new Intent(this, Find_user.class);
+            intent.putExtra("actions", "newChat");
             startActivity(intent);
 
         } else if (id == R.id.nav_contacts) {
 
         } else if (id == R.id.nav_Seting) {
-            DD_SQL.instanse(this).clearAccess();
+
+        } else if (id == R.id.nav_Sign_Out) {
+            Message message = new Message();
+            message.what = MSG.SING_OUT;
+            DD_SQL.instanse(null).HsendMessage(message);
+
             finish();
+
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -166,6 +181,16 @@ public class MainActivity2 extends AppCompatActivity
 
     @Override
     public void onItemClick(View view, Object o) {
+
+        Conversation conversation = (Conversation) o;
+        Intent intent = new Intent(this, ConversationActivity.class);
+
+        intent.putExtra("conversation_id2", conversation.getConversation_id());
+
+        startActivity(intent);
+
+        Log.e(TAG, o.toString());
+
 
     }
 
@@ -177,12 +202,44 @@ public class MainActivity2 extends AppCompatActivity
 
             Log.e(TAG, "# сообщенее: " + msg.what);
             switch (msg.what) {
-                case MSG.UPDATE_RECYCLER_VIEV:
+//                case MSG.UPDATE_RECYCLER_VIEV:
+//                    // myAdapterFindUser.invalideRV();
+//                    myAdapterMainActivity.MSG_updete();
+//                    myAdapterMainActivity.notifyDataSetChanged();
+//                    break;
+                case MSG.UPDATE_RECYCLER_VIEV_ADD_CONVERSATION:
+                    // myAdapterFindUser.invalideRV();
+                    myAdapterMainActivity.MSG_updete();
+                    myAdapterMainActivity.notifyDataSetChanged();
+                    break;
+                case MSG.UPDATE_RECYCLER_VIEV_ADD_CONVERSATION_ALL:
                     // myAdapterFindUser.invalideRV();
                     myAdapterMainActivity.MSG_updete();
                     myAdapterMainActivity.notifyDataSetChanged();
                     break;
 
+
+                case MSG.UPDATE_RECYCLER_VIEV_ADD_MESSAGES:
+                    // myAdapterFindUser.invalideRV();
+
+                    myAdapterMainActivity.MSG_updete();
+                    myAdapterMainActivity.notifyDataSetChanged();
+
+                    Messages messages = (Messages) msg.obj;
+
+                    User user1 = DD_SQL.instanse(null).SQL_select_Myusers_where();
+
+
+                    if (user1.getUsers_id()!=messages.getSender_id())
+                    {
+                        Log.e(TAG, " ,messages.getConversation_id()  " +messages.getConversation_id());
+                        DD_SQL.instanse(null).showNotificationNewMessage(messages.getUs_FL_name(),messages.getMessage(),messages.getConversation_id());
+                    }
+
+
+
+
+                    break;
 
                 default:
                     break;

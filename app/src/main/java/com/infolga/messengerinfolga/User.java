@@ -2,6 +2,13 @@ package com.infolga.messengerinfolga;
 
 import org.jdom2.Element;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class User   implements Myin{
     private int users_id;
@@ -25,7 +32,21 @@ public class User   implements Myin{
         first_name = el.getChild(MSG.XML_ELEMENT_FIRST_NAME).getText();
         last_name = el.getChild(MSG.XML_ELEMENT_LAST_NAME).getText();
         is_active = Integer.parseInt(el.getChild(MSG.XML_ELEMENT_IS_ACTIVE).getText());
-        last_online_at = el.getChild(MSG.XML_ELEMENT_LAST_ONLINE).getText();
+
+
+        SimpleDateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date d = null;
+        try {
+            d = dfm.parse( el.getChild(MSG.XML_ELEMENT_LAST_ONLINE).getText());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar time = Calendar.getInstance();
+        time.setTime(d);
+        time.add(Calendar.MILLISECOND, time.getTimeZone().getOffset(time.getTimeInMillis()));
+
+
+        last_online_at = dfm.format( time.getTime());
     }
 
     public int getUsers_id() {
