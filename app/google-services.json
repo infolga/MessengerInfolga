@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "884894822108",
+    "firebase_url": "https://servertestinfolga.firebaseio.com",
+    "project_id": "servertestinfolga",
+    "storage_bucket": "servertestinfolga.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884894822108:android:7ff93207dae07f0d",
+        "android_client_info": {
+          "package_name": "com.infolga.messengerinfolga"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "884894822108-80465m5h3naj3omdopntrtkaf5av6fa4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9naYGbzYmrCVvWgNCP534LHLEDb6Bbrs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -168,12 +168,13 @@ public class DD_SQL {
     public void showNotificationNewMessage( String Title, String Text, int conversation_id) {
 
         Log.e(TAG, "conversation_id 1231312312   "+conversation_id);
-        Intent intent2 = new Intent(cont, ConversationActivity.class);
-
-        intent2.putExtra("conversation_id2",conversation_id);
+        //Intent intent2 = new Intent(cont, ConversationActivity.class);
 
 
-        // Intent intent = new Intent(this, MainActivity2.class);
+       // intent2.putExtra(MSG.XML_ELEMENT_CONVERSATION_ID,conversation_id);
+
+        Intent intent2 = new Intent(cont, MainActivity2.class);
+
         intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(cont, 0, intent2, 0);
 
@@ -216,7 +217,7 @@ public class DD_SQL {
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(5 /* ID of notification */, notificationBuilder.build());
 
 
     }

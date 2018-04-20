@@ -92,7 +92,7 @@ public class ServerConnect {
                 }
             }
             if (!socket.isClosed()) {
-                h.postDelayed(waitAndReedMsg, 70);
+                h.postDelayed(waitAndReedMsg, 100);
             }
         }
     };

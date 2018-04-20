@@ -38,7 +38,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
 
         Intent intent = getIntent();
-        int conversation_id = intent.getIntExtra("conversation_id2", -1);
+        int conversation_id = intent.getIntExtra(MSG.XML_ELEMENT_CONVERSATION_ID,-1) ;
 
         Log.e(TAG, "conversation_id   "+conversation_id);
 
@@ -163,6 +163,8 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                             mMessageRecycler.smoothScrollToPosition(0);
                         }
                     } else {
+
+                        Log.e(TAG, "messages.getConversation  "+messages.getConversation_id());
                         DD_SQL.instanse(null).showNotificationNewMessage(messages.getUs_FL_name(), messages.getMessage(), messages.getConversation_id());
 
                     }

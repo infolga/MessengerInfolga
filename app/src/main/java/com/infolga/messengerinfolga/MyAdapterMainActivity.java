@@ -1,6 +1,7 @@
 package com.infolga.messengerinfolga;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -73,6 +74,13 @@ public class MyAdapterMainActivity extends RecyclerView.Adapter<MyAdapterMainAct
         holder.conversation = conversation;
         holder.name_conversation.setText(conversation.getName_conversation());
         holder.last_msg.setText(conversation.getText_last_Mes());
+
+        if (conversation . getType().equals("group")){
+            holder.name_conversation.setTextColor(Color.RED);
+
+        }else   {
+            holder.name_conversation.setTextColor(Color.BLUE);
+        }
 
           DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date now = Calendar.getInstance().getTime();

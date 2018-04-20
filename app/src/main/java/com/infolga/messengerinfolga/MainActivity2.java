@@ -185,7 +185,7 @@ public class MainActivity2 extends AppCompatActivity
         Conversation conversation = (Conversation) o;
         Intent intent = new Intent(this, ConversationActivity.class);
 
-        intent.putExtra("conversation_id2", conversation.getConversation_id());
+        intent.putExtra(MSG.XML_ELEMENT_CONVERSATION_ID, conversation.getConversation_id());
 
         startActivity(intent);
 
